@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>your will my hands</title>
+  <meta name="author" content="messnoTrace">
+  
+  <meta name="description" content="搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：
+productFlavor{
+          baidu {
+          }
+        xiaomi{}
+         wandoujia{}
+    }
+像这样，就可以了，">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="your will my hands"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="your will my hands" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <header id="header" class='normal_mode'>
+    <div class="inner"><div class="alignleft">
+  <h1><a href="/"><img class="logo" src="/css/img/logo.png"/>your will my hands</a></h1>
+  <h2><a href="/">your will my hands</a></h2>
+</div>
+<nav id="main-nav">
+  <ul>
+    
+      <li><a href="/">博客</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></div>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-06-17T02:29:14.241Z">
+          <a href="/2017/06/17/Android 多渠道打包如何修改app name，icon/">
+              2017-06-17
+          </a>
+        </time>
+      
+      
+  
+    <h1 class="title"></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：</p>
+<pre><code>productFlavor{
+          baidu {
+          }
+        xiaomi{}
+         wandoujia{}
+    }
+</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p>
+<p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p>
+<p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p>
+<pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+</code></pre><p>然后application</p>
+<pre><code>tools:replace=&quot;android:icon&quot; 
+android:icon=&quot;@drawable/icon_all&quot;
+</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p>
+<p>剩下的就靠小伙伴么自己摸索了。。。。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <!-- JiaThis Button BEGIN -->
+    <div class="jiathis_style">
+        <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_icons_1"></a>
+        <a class="jiathis_button_icons_2"></a>
+        <a class="jiathis_button_icons_3"></a>
+        <a class="jiathis_button_icons_4"></a>
+        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+        <a class="jiathis_counter_style"></a>
+    </div>
+    <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js" charset="utf-8"></script>
+    <!-- JiaThis Button END -->
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"moo123"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+<!-- Duoshuo Comment END -->
+  
+</section>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:messnoTrace.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2017/06/17/Android Accessibility 的简单用法/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/AndroidStudio中调用.so包出现找不到.so包的错误/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/如何修改CheckBoxPreference 中title ，summary字体的颜色/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/Android 多渠道打包如何修改app name，icon/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/Android通过反射实现静默安装/"></a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 messnoTrace
+  
+  
+    <a class="icon github" href="https://github.com/yunlzheng">github</a>
+    <a href="http://weibo.com/503error">weibo</a>
+    <a href="http://www.google.com">google+</a>
+  
+</div>
+
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        (function(){
+
+            $(window).scroll(function(){
+
+                var scrollTop = $(window).scrollTop();
+                if ( scrollTop >200 ){
+                    $("#header").removeClass('normal_mode').addClass('top_mode');
+                } else{
+                    $("#header").removeClass('top_mode').addClass('normal_mode');
+                }
+
+            });
+
+        })();
+    </script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

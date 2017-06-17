@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>your will my hands</title>
+  <meta name="author" content="messnoTrace">
+  
+  <meta name="description" content="Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或者操作不灵活的人来辅助操作的，也可以用来干一些别的事，比如自动抢红包啊，静默安装点击啊等已知或者未知的应用。出于某种需求，就研究了下这个功能的简单用法，先做一个模拟按钮点击的效果。  布局很简单，就不贴代码了，简单描述下">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="your will my hands"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="your will my hands" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <header id="header" class='normal_mode'>
+    <div class="inner"><div class="alignleft">
+  <h1><a href="/"><img class="logo" src="/css/img/logo.png"/>your will my hands</a></h1>
+  <h2><a href="/">your will my hands</a></h2>
+</div>
+<nav id="main-nav">
+  <ul>
+    
+      <li><a href="/">博客</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></div>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-06-17T02:29:14.241Z">
+          <a href="/2017/06/17/Android Accessibility 的简单用法/">
+              2017-06-17
+          </a>
+        </time>
+      
+      
+  
+    <h1 class="title"></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或者操作不灵活的人来辅助操作的，也可以用来干一些别的事，比如自动抢红包啊，静默安装点击啊等已知或者未知的应用。出于某种需求，就研究了下这个功能的简单用法，先做一个模拟按钮点击的效果。<br>  布局很简单，就不贴代码了，简单描述下，主界面就一个按钮，id随便你取，在Activity中设置点击事件，弹出一个Toast。</p>
+<p>#####步骤</p>
+<ol>
+<li><p>创建CheckAccessbilityServices：<br>CheckAccessbilityServices 继承自AccessibilityService，并在清单文件applcation节点中配置，并加入权限</p>
+<pre><code>&lt;service   
+ android:name=&quot;.CheckAccessbilityServices&quot;   
+ android:enabled=&quot;true&quot;        
+android:exported=&quot;true&quot;
+android:label=&quot;测试点击&quot;
+android:permission=&quot;android.permission.BIND_ACCESSIBILITY_SERVICE&quot;&gt;  
+    &lt;intent-filter&gt;      
+      &lt;action android:name=&quot;android.accessibilityservice.AccessibilityService&quot; /&gt;
+      &lt;/intent-filter&gt; 
+   &lt;meta-data
+         android:name=&quot;android.accessibilityservice&quot;
+         android:resource=&quot;@xml/check_accessibility_config&quot; /&gt;
+&lt;/service&gt;
+</code></pre><p>2.在res目录下创建文件夹xml，并创建步骤一中check_accessibility_config.xml</p>
+<pre><code>&lt;accessibility-service xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;                   android:description=&quot;@string/check_click&quot; 
+    android:packageNames=&quot;com.notrace&quot;      
+android:accessibilityEventTypes=    &quot;typeAllMask|typeViewClicked|typeViewFocused|typeNotificationStateChanged|typeWindowStateChanged&quot;    
+  android:accessibilityFlags=&quot;flagDefault&quot;   
+  android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;    
+  android:notificationTimeout=&quot;100&quot;   
+  android:canRetrieveWindowContent=&quot;true&quot;    /&gt;
+</code></pre><p>这里面有一些常用的属性，简单介绍下</p>
+<pre><code>android:accessibilityEventTypes=&quot;typeAllMask&quot;
+</code></pre><p>看属性名也差不多可以明白，这个是用来设置响应事件的类型，typeAllMask当然就是响应所有类型的事件了。当然还有单击、长按、滑动等。 </p>
+<pre><code>android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;
+</code></pre><p>设置回馈给用户的方式</p>
+<pre><code>android:notificationTimeout=&quot;100&quot;
+</code></pre><p>响应时间的设置就不用多说了 </p>
+<pre><code>android:packageNames=&quot;com.notrace&quot;
+</code></pre><p>可以指定响应某个应用的事件，我的demo包名就叫com.notrace,可以多个，用”,”隔开。</p>
+<pre><code>android:description=&quot;模拟点击&quot;
+</code></pre></li>
+</ol>
+<p>描述你在系统辅助功能开关中看到的描述</p>
+<p>3.CheckAccessbilityServices  实现onAccessibilityEvent和onInterrupt方法</p>
+<pre><code>     @Override  
+ public void onAccessibilityEvent(AccessibilityEvent event) {  
+           //过滤包名
+           String pkgName = event.getPackageName().toString();    
+           if(!&quot;com.notrace&quot;.equals(pkgName))
+                 return;
+         switch (type){  
+               case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:      
+           //切换页面的时候此时会触发一个叫TYPE_WINDOW_STATE_CHANGED的事件
+             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow(); 
+            if(nodeInfo!=null)  {
+                if(&quot;com.notrace.MainActivity&quot;.equals(event.getClassName())){    
+                     List&lt;AccessibilityNodeInfo&gt;     list=
+                     nodeInfo.findAccessibilityNodeInfosByViewId(&quot;com.notrace:id/btn_click&quot;);
+               if(list!=null&amp;&amp;list.size()&gt;0)  {        
+               list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);       
+                }        
+           }       
+            break;   
+        case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:   
+          break;
+       }                     
+}  
+</code></pre><p>注意这里有个叫com.notrace:id/btn_click的，就是前面的那个按钮，我取id叫btn_click,这个东西可以通过eclipse提供的一个工具dump查看,如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-78fa62630f5370b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162014.png"></p>
+<p>微信抢红包的界面你就可以这么看了。<br>list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);      就是模拟点击事件</p>
+<p>至此，模拟点击就已经全部完成了，我们打开手机辅助功能界面会看见：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-2b1084259b04dab0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162331.png"><br>点击进去：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-cd8e0447e512c2ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162434.png"></p>
+<p>打开这个开关就可以了。<br>至此，当页面切换到MainActivity中就可以弹出toast了，至于别的奇奇怪怪的功能，就需要小伙伴们自己摸索了。<br><a href="https://github.com/messnoTrace/Demo_Accessbility.git" target="_blank" rel="external">Demo代码</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <!-- JiaThis Button BEGIN -->
+    <div class="jiathis_style">
+        <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_icons_1"></a>
+        <a class="jiathis_button_icons_2"></a>
+        <a class="jiathis_button_icons_3"></a>
+        <a class="jiathis_button_icons_4"></a>
+        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+        <a class="jiathis_counter_style"></a>
+    </div>
+    <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js" charset="utf-8"></script>
+    <!-- JiaThis Button END -->
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"moo123"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+<!-- Duoshuo Comment END -->
+  
+</section>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:messnoTrace.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2017/06/17/Android Accessibility 的简单用法/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/AndroidStudio中调用.so包出现找不到.so包的错误/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/如何修改CheckBoxPreference 中title ，summary字体的颜色/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/Android 多渠道打包如何修改app name，icon/"></a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/17/Android通过反射实现静默安装/"></a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 messnoTrace
+  
+  
+    <a class="icon github" href="https://github.com/yunlzheng">github</a>
+    <a href="http://weibo.com/503error">weibo</a>
+    <a href="http://www.google.com">google+</a>
+  
+</div>
+
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        (function(){
+
+            $(window).scroll(function(){
+
+                var scrollTop = $(window).scrollTop();
+                if ( scrollTop >200 ){
+                    $("#header").removeClass('normal_mode').addClass('top_mode');
+                } else{
+                    $("#header").removeClass('top_mode').addClass('normal_mode');
+                }
+
+            });
+
+        })();
+    </script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
