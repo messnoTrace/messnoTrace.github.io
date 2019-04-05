@@ -4,10 +4,14 @@ date: 2019-04-05 10:37:28
 tags:
 ---
 
-#####前言
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
+
+###前言
 说到wait，很容易想到一个常问的面试题，wait和sleep的区别。简单的理解就是，wait是object的方法，调用wait()，线程会进去等待状态，并且会释放出锁，非阻塞的，等待持有锁的线程调用notify()，才会继续执行。sleep是Thread的方法，sleep()会让当前线程暂停一段时间，但是不会释放锁，是阻塞的。
 
-#####Wait/notify在线程中的通信
+###Wait/notify在线程中的通信
 我们先看下面一段代码：
  class Data:
 
@@ -325,8 +329,8 @@ synchronized可以将任何一个Object对象作为同步对象来看待，每�
 3）调用wait()这个线程会释放锁。
 
 另外还有一点，需要提一下。notify()只会唤醒一个线程，所以在多线程的时候，可能会出现一些问题，所以，尽量用notifyAll()唤醒所有等待的线程 比较好。下面来看看另一个经典问题。
-####生产者/消费者模式
-#####一个生产者，一个消费者
+###生产者/消费者模式
+###一个生产者，一个消费者
 废话不多说，直接看code.
 生产者P:
 
@@ -699,7 +703,7 @@ public class Run {
 
 程序的结果是size不会大于1|。
 
-######一生产多消费：来操作栈
+###一生产多消费：来操作栈
 代码还是上面的那些，我们改一下Run：
             
             package com.notrace;

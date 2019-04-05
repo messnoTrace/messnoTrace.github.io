@@ -1,3 +1,11 @@
+---
+title: Android Accessbility的简单用法
+date: 2019-04-05 11:33:38
+tags:
+---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
 Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或者操作不灵活的人来辅助操作的，也可以用来干一些别的事，比如自动抢红包啊，静默安装点击啊等已知或者未知的应用。出于某种需求，就研究了下这个功能的简单用法，先做一个模拟按钮点击的效果。
   布局很简单，就不贴代码了，简单描述下，主界面就一个按钮，id随便你取，在Activity中设置点击事件，弹出一个Toast。
 

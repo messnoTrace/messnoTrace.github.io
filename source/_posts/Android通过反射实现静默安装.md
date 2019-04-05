@@ -1,8 +1,12 @@
 ---
 title: Android通过反射实现静默安装
-date: 2019-04-05 10:35:18
-tags
+date: 2019-04-05 11:38:23
+tags:
 ---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
+
 本文讲解通过反射Android pm  instal来调用隐藏api， 来静默安装，至于原理什么的，就不多说了，网络上一搜一大把，下面是亲测可行的；
 先上[Demo](https://github.com/messnoTrace/SlienceInstall),其中的libs文件夹下的class.jar是主角。
 本文有一个大前提，那就是你的apk是放在系统/system/priv-app目录下，也就是说，rom是你们自己搞的，手动滑稽=。= 

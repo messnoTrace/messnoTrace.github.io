@@ -3,6 +3,9 @@ title: 用androidstudio编写第一个xposed模块
 date: 2019-04-05 10:36:55
 tags:
 ---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
 前提：你的手机装了xposedinstaller ，已经获取root权限，否则以下内容不用看了。
 参考链接:https://blog.csdn.net/mrglaucusss/article/details/50963542
 

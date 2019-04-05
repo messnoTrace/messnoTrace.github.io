@@ -1,3 +1,11 @@
+---
+title: Android 多渠道打包修改app name，icon
+date: 2019-04-05 11:44:02
+tags:
+---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
 搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:
 
                    

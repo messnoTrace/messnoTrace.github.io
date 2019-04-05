@@ -1,3 +1,12 @@
+---
+title: AndroidStudio中调用.so包出现找不到.so包的错误
+date: 2019-04-05 11:40:45
+tags:
+---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
+
 ![QQ截图20160721125018.png](http://upload-images.jianshu.io/upload_images/1453857-0fb31dfbb366a918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ###出现原因

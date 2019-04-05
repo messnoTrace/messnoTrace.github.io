@@ -1,3 +1,12 @@
+---
+title: Android修改CheckBoxPreference 中title ，summary字体的颜色
+date: 2019-04-05 11:36:23
+tags:
+---
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script >hljs.initHighlightingOnLoad();</script>  
+
 以前没怎么关注过PreferenceActivity的一些用法只是简单了解下，然后刚好今天遇到了某个机型上出现了问题：**我明明设置的是黑色的字体，在这个机器上却是白色的**，然后各种摸索得出了个推论，页面的字体颜色什么的，可能是更随系统来的，受系统调控：
 我是这么写的，
 
