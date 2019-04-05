@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        乱逃的博客 | notrace&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> your will my hands </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>messnoTrace</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> your will my hands </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 00:07:17</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>以前没怎么关注过PreferenceActivity的一些用法只是简单了解下，然后刚好今天遇到了某个机型上出现了问题：<strong>我明明设置的是黑色的字体，在这个机器上却是白色的</strong>，然后各种摸索得出了个推论，页面的字体颜色什么的，可能是更随系统来的，受系统调控：<br>我是这么写的，</p>
+<pre><code>  &lt;CheckBoxPreference    
+  android:defaultValue=&quot;true&quot;   
+ android:key=&quot;weather_use_metric&quot;  
+android:textColor=&quot;@color/black&quot;
+  android:title=&quot;@string/weather_use_metric&quot; /&gt;
+</code></pre><p>问题出现 了那没办法，只能想办法改了，好在现在学会了面向google编程，然后搜的一下，找到了个解决方案，先上怎么解决，然后再说为什么这么干。首先建个layout ，名字随便取（我取名custom_preferece_layout.xml），内容如下:</p>
+<pre><code>          &lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; 
+             android:layout_width=&quot;match_parent&quot;
+           android:layout_height=&quot;wrap_content&quot;   
+           android:minHeight=&quot;?android:attr/listPreferredItemHeight&quot; 
+           android:gravity=&quot;center_vertical&quot; 
+           android:paddingRight=&quot;?android:attr/scrollbarSize&quot;&gt;  
+        &lt;RelativeLayout android:layout_width=&quot;wrap_content&quot;        
+          android:layout_height=&quot;wrap_content&quot; android:layout_marginLeft=&quot;15dip&quot;   
+         android:layout_marginRight=&quot;6dip&quot;
+         android:layout_marginTop=&quot;6dip&quot;      
+         android:layout_marginBottom=&quot;6dip&quot; 
+         android:layout_weight=&quot;1&quot;&gt;     
+        &lt;TextView android:id=&quot;@+android:id/title&quot;       
+           android:layout_width=&quot;wrap_content&quot; 
+         android:layout_height=&quot;wrap_content&quot;         
+         android:singleLine=&quot;true&quot; 
+          android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;        
+          android:ellipsize=&quot;marquee&quot; android:fadingEdge=&quot;horizontal&quot;         
+         android:textColor=&quot;@color/black&quot; /&gt;    
+        &lt;TextView android:id=&quot;@+android:id/summary&quot;     
+         android:layout_width=&quot;wrap_content&quot; 
+        android:layout_height=&quot;wrap_content&quot;          
+        android:layout_below=&quot;@android:id/title&quot; 
+        android:layout_alignLeft=&quot;@android:id/title&quot;           
+       android:textAppearance=&quot;?android:attr/textAppearanceSmall&quot;        
+       android:maxLines=&quot;4&quot; /&gt;   
+   &lt;/RelativeLayout&gt;    
+&lt;!-- Preference should place its actual preference widget here. --&gt;  
+    &lt;LinearLayout android:id=&quot;@+android:id/widget_frame&quot;     
+       android:layout_width=&quot;wrap_content&quot;
+       android:layout_height=&quot;match_parent&quot;        
+      android:gravity=&quot;center_vertical&quot; android:orientation=&quot;vertical&quot; /&gt;
+  &lt;/LinearLayout&gt;
+</code></pre><p>在这个布局中修改title，sunmmary的颜色就可以了。<br>然后再CheckBoxPreference    中加一句：</p>
+<pre><code>&lt;CheckBoxPreference   
+ android:defaultValue=&quot;true&quot;   
+   android:key=&quot;weather_use_metric&quot;  
+  android:layout=&quot;@layout/custom_preferece_layout&quot; 
+  android:textColor=&quot;@color/black&quot;   
+     /&gt;
+</code></pre><p>然后，就解决了这个问题，那为什么这么搞呢？进入CheckBoxPreference   顶层父类Preference中看，看到构造中的注释了：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-fca483c577435efc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110175559.png"></p>
+<p>这玩意默认的控制了样式，然后再往下看到一个方法：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-54f7fd8444a953dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110175911.png"></p>
+<p>他说大部分情况足够用了，但是这不是出来问题么，于是到android的values中的attr下找，</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-e5a69f67b3b10c3d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>嗯很贴心，行数都截出来了。顶层默认实现了个布局，在CheckBoxPreference的onBindView方法中出现了个id和一个方法：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-30381fbc2e2d3ff8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110181103.png"></p>
+<p>id点进去能找到个布局，然后再父类TwoStatePreference中可以看到这个方法里面写了什么，注意看上面的布局控件的id，你没看错，就是覆盖了preference_material.xml 中的布局：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-c2fb7896c6189aba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110181315.png"></p>
+<p>附上答案链接 <a href="http://stackoverflow.com/questions/4469514/how-to-customize-text-color-of-the-checkboxpreference-title" target="_blank" rel="external">http://stackoverflow.com/questions/4469514/how-to-customize-text-color-of-the-checkboxpreference-title</a></p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/零乱逃">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/messnoTrace">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

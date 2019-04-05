@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        乱逃的博客 | notrace&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> your will my hands </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>messnoTrace</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> your will my hands </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 00:07:17</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>本文讲解通过反射Android pm  instal来调用隐藏api， 来静默安装，至于原理什么的，就不多说了，网络上一搜一大把，下面是亲测可行的；<br>先上<a href="https://github.com/messnoTrace/SlienceInstall" target="_blank" rel="external">Demo</a>,其中的libs文件夹下的class.jar是主角。<br>本文有一个大前提，那就是你的apk是放在系统/system/priv-app目录下，也就是说，rom是你们自己搞的，手动滑稽=。=<br>如果你是用AndroidStudio版本的，也是链接中的<a href="https://github.com/messnoTrace/SlienceInstall/tree/master/DemoSilenceInstall" target="_blank" rel="external">DemoSilenceInstall</a><br>步骤如下：</p>
+<ul>
+<li>建一个你自己的工程 ，将class.jar放入到libs目录下。</li>
+<li>然后projectStructure(按F4直接进)，进入dependence点击+号，选择FileDependence 记得把 scope置为Provided，如下图:<br><img src="http://upload-images.jianshu.io/upload_images/1453857-d74f2be33a1b022c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.png"></li>
+</ul>
+<ul>
+<li><p>工程目录下的gradle文件修改：</p>
+<pre><code>allprojects {  
+  repositories {      
+            jcenter()   
+         }  
+            gradle.projectsEvaluated {             
+                     tasks.withType(JavaCompile) {     
+                                   options.compilerArgs.add(&apos;-Xbootclasspath/p:app\\libs\\class.jar&apos;)                  
+                  }  
+                 }
+            }
+</code></pre><p>   <strong>看好名字,不要眼瞎，后面是你起的jar包的名字，这个名字随意取，两者对应就行，</strong></p>
+<p>  以上的操作的目的有两个：</p>
+<pre><code>1.就是将class.jar以eclipse中那种userlib的形式导入，
+2.调整jar包的优先级
+</code></pre></li>
+<li>再将demo中install 包下的代码放到你的工程中.如果这个时候你的PM.java这个文件不报错，那么恭喜，你的操作就算完成了</li>
+<li>这个步骤我的代码出现了问题，不知道你的会不会，就是Android中65535问题了，也就是解决这个问题做的操作，AS下好解决，这个不做过多解释。</li>
+</ul>
+<p>剩下的，就是将应用打包签名，放到/system/priv-app这个目录下 就ok了，</p>
+<p>下面说下Eclipse版本的操作，代码都是一样的，jar包也是一样，就两点，jar包通过userlibrary的形式导入，直接放图吧，多图慎入：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-e9e8d436fbd4ddde.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="
+![Uploading 4_049957.png . . .]
+"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-d5b134f0db69b9a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="3.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-cecd54290fd90360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4.png"></p>
+<p>![</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-e6cde6675deb959b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Uploading 6_086779.png . . .]
+"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-16490fdfd7ab0de6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="6.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-73ac54c47095b33b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="7.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-c524e6d1cb374503.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="8.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-c57017127dc439c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="9.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-d0b9e66477c90d60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="
+![Uploading 10_162291.png . . .]
+"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-8fd7af66b59e3784.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="11.png"></p>
+<p>至此，，搞定了，╮(╯▽╰)╭，继续搬砖。如果你要问这个class怎么来的，你找做rom的大神们给你编译一份源码就行，反正我不会。OTZ…. 然而这个地方在我写完文章后又出现了一个实战问题，那就是用multydex分包处理后，还是会出现 <a href="http://stackoverflow.com/questions/32721083/too-many-classes-in-main-dex-list-main-dex-capacity-exceeded" target="_blank" rel="external">Too many classes in –main-dex-list, main dex capacity exceeded</a>，，目前一个最简单暴力的方法就是把minsdkversion 调成21+，我在想想办法，，，，解决了更新文章。</p>
+<p>(⊙o⊙)…，暂时没解决，不过上了一个新版本，用aidl实现的，也是可以用<a href="https://github.com/messnoTrace/SlienceInstall/tree/master/MyApplication" target="_blank" rel="external">这里的</a>…东西都差不多，jar包换了个精简的，然后改用aidl实现的注意，aidl的包名不要动，，，然后配置下gradle里面的aidl</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/零乱逃">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/messnoTrace">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

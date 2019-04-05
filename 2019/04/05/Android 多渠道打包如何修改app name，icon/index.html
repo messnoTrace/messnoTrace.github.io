@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        乱逃的博客 | notrace&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> your will my hands </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>messnoTrace</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> your will my hands </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 00:07:17</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：</p>
+<pre><code>productFlavor{
+          baidu {
+          }
+        xiaomi{}
+         wandoujia{}
+    }
+</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p>
+<p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p>
+<p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p>
+<pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+</code></pre><p>然后application</p>
+<pre><code>tools:replace=&quot;android:icon&quot; 
+android:icon=&quot;@drawable/icon_all&quot;
+</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p>
+<p>剩下的就靠小伙伴么自己摸索了。。。。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/零乱逃">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/messnoTrace">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
