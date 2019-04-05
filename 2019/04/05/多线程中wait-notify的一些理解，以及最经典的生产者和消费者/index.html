@@ -48,7 +48,7 @@
             <img src="/img/avatar.jpg" />
         </div>
         <div class="name">
-            <i>messnoTrace</i>
+            <i>乱逃</i>
         </div>
     </div>
     <div class="contents" id="nav-content">
@@ -56,32 +56,32 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -100,7 +100,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -123,16 +123,20 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-04-05 10:37:28</span></span>
+        <span class="attr">Post：<span>2019-04-05 10:37:28</span></span>
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content ">
-        <p>#####前言<br>说到wait，很容易想到一个常问的面试题，wait和sleep的区别。简单的理解就是，wait是object的方法，调用wait()，线程会进去等待状态，并且会释放出锁，非阻塞的，等待持有锁的线程调用notify()，才会继续执行。sleep是Thread的方法，sleep()会让当前线程暂停一段时间，但是不会释放锁，是阻塞的。</p>
-<p>#####Wait/notify在线程中的通信<br>我们先看下面一段代码：<br> class Data:</p>
+        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script>hljs.initHighlightingOnLoad();</script>  
+
+<p>###前言<br>说到wait，很容易想到一个常问的面试题，wait和sleep的区别。简单的理解就是，wait是object的方法，调用wait()，线程会进去等待状态，并且会释放出锁，非阻塞的，等待持有锁的线程调用notify()，才会继续执行。sleep是Thread的方法，sleep()会让当前线程暂停一段时间，但是不会释放锁，是阻塞的。</p>
+<p>###Wait/notify在线程中的通信<br>我们先看下面一段代码：<br> class Data:</p>
 <pre><code>      package com.notrace;
       import java.util.ArrayList;
       import java.util.List;
@@ -391,8 +395,8 @@ public static void main(String[] args) {
 <p>日志说明了一个问题,notify()调用之后，并不会立即释放锁，而是会接着执行后面的代码，执行完了，才会释放锁。</p>
 <p>synchronized可以将任何一个Object对象作为同步对象来看待，每个Object都实现了wait()和notify()。他们必须用被用在synchronized同步的区域内，wait()让区域内的线程进入等待状态，释放同步锁，notify()可以唤醒一个因调用了wait()而处于等待状态中的线程。被唤醒的线程继续执行wait()后面的代码。如果notify之后没有处于阻塞等待中的线程，就会被忽略。<br>关于释放锁，有以下几个结论，<br>1）执行完同步代码块，就会释放锁。<br>2）执行代码块的过程中，如果遇到异常而导致线程终止，也会释放锁。<br>3）调用wait()这个线程会释放锁。</p>
 <p>另外还有一点，需要提一下。notify()只会唤醒一个线程，所以在多线程的时候，可能会出现一些问题，所以，尽量用notifyAll()唤醒所有等待的线程 比较好。下面来看看另一个经典问题。</p>
-<p>####生产者/消费者模式</p>
-<p>#####一个生产者，一个消费者<br>废话不多说，直接看code.<br>生产者P:</p>
+<p>###生产者/消费者模式</p>
+<p>###一个生产者，一个消费者<br>废话不多说，直接看code.<br>生产者P:</p>
 <pre><code>            package com.notrace;
 
   //生产者
@@ -708,7 +712,7 @@ public void run() {
 }
 </code></pre><p>执行结果：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-eb44c5bbfbef7611.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="6.png"></p>
 <p>程序的结果是size不会大于1|。</p>
-<p>######一生产多消费：来操作栈<br>代码还是上面的那些，我们改一下Run：</p>
+<p>###一生产多消费：来操作栈<br>代码还是上面的那些，我们改一下Run：</p>
 <pre><code>        package com.notrace;
 
 public class Run {
@@ -743,7 +747,7 @@ public static void main(String []args) {
         
             <div class="donate-container">
     <div class="donate-button">
-        <button id="donate-button">赞赏</button>
+        <button id="donate-button">donate</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
         <img id="donate-img" src="" data-src="/img/avatar.jpg">

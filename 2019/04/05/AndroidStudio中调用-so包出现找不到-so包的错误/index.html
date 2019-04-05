@@ -11,7 +11,7 @@
 
     <title>
         
-        乱逃的博客 | notrace&#39;s Blog
+        AndroidStudio中调用.so包出现找不到.so包的错误 - 乱逃的博客 | notrace&#39;s Blog
         
     </title>
 
@@ -48,7 +48,7 @@
             <img src="/img/avatar.jpg" />
         </div>
         <div class="name">
-            <i>messnoTrace</i>
+            <i>乱逃</i>
         </div>
     </div>
     <div class="contents" id="nav-content">
@@ -56,32 +56,32 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -100,7 +100,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -119,80 +119,46 @@
 
 <div class="post-container">
     <div class="post-title">
-        
+        AndroidStudio中调用.so包出现找不到.so包的错误
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-04-05 00:07:17</span></span>
+        <span class="attr">Post：<span>2019-04-05 11:40:45</span></span>
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content ">
-        <p>以前没怎么关注过PreferenceActivity的一些用法只是简单了解下，然后刚好今天遇到了某个机型上出现了问题：<strong>我明明设置的是黑色的字体，在这个机器上却是白色的</strong>，然后各种摸索得出了个推论，页面的字体颜色什么的，可能是更随系统来的，受系统调控：<br>我是这么写的，</p>
-<pre><code>  &lt;CheckBoxPreference    
-  android:defaultValue=&quot;true&quot;   
- android:key=&quot;weather_use_metric&quot;  
-android:textColor=&quot;@color/black&quot;
-  android:title=&quot;@string/weather_use_metric&quot; /&gt;
-</code></pre><p>问题出现 了那没办法，只能想办法改了，好在现在学会了面向google编程，然后搜的一下，找到了个解决方案，先上怎么解决，然后再说为什么这么干。首先建个layout ，名字随便取（我取名custom_preferece_layout.xml），内容如下:</p>
-<pre><code>          &lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; 
-             android:layout_width=&quot;match_parent&quot;
-           android:layout_height=&quot;wrap_content&quot;   
-           android:minHeight=&quot;?android:attr/listPreferredItemHeight&quot; 
-           android:gravity=&quot;center_vertical&quot; 
-           android:paddingRight=&quot;?android:attr/scrollbarSize&quot;&gt;  
-        &lt;RelativeLayout android:layout_width=&quot;wrap_content&quot;        
-          android:layout_height=&quot;wrap_content&quot; android:layout_marginLeft=&quot;15dip&quot;   
-         android:layout_marginRight=&quot;6dip&quot;
-         android:layout_marginTop=&quot;6dip&quot;      
-         android:layout_marginBottom=&quot;6dip&quot; 
-         android:layout_weight=&quot;1&quot;&gt;     
-        &lt;TextView android:id=&quot;@+android:id/title&quot;       
-           android:layout_width=&quot;wrap_content&quot; 
-         android:layout_height=&quot;wrap_content&quot;         
-         android:singleLine=&quot;true&quot; 
-          android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;        
-          android:ellipsize=&quot;marquee&quot; android:fadingEdge=&quot;horizontal&quot;         
-         android:textColor=&quot;@color/black&quot; /&gt;    
-        &lt;TextView android:id=&quot;@+android:id/summary&quot;     
-         android:layout_width=&quot;wrap_content&quot; 
-        android:layout_height=&quot;wrap_content&quot;          
-        android:layout_below=&quot;@android:id/title&quot; 
-        android:layout_alignLeft=&quot;@android:id/title&quot;           
-       android:textAppearance=&quot;?android:attr/textAppearanceSmall&quot;        
-       android:maxLines=&quot;4&quot; /&gt;   
-   &lt;/RelativeLayout&gt;    
-&lt;!-- Preference should place its actual preference widget here. --&gt;  
-    &lt;LinearLayout android:id=&quot;@+android:id/widget_frame&quot;     
-       android:layout_width=&quot;wrap_content&quot;
-       android:layout_height=&quot;match_parent&quot;        
-      android:gravity=&quot;center_vertical&quot; android:orientation=&quot;vertical&quot; /&gt;
-  &lt;/LinearLayout&gt;
-</code></pre><p>在这个布局中修改title，sunmmary的颜色就可以了。<br>然后再CheckBoxPreference    中加一句：</p>
-<pre><code>&lt;CheckBoxPreference   
- android:defaultValue=&quot;true&quot;   
-   android:key=&quot;weather_use_metric&quot;  
-  android:layout=&quot;@layout/custom_preferece_layout&quot; 
-  android:textColor=&quot;@color/black&quot;   
-     /&gt;
-</code></pre><p>然后，就解决了这个问题，那为什么这么搞呢？进入CheckBoxPreference   顶层父类Preference中看，看到构造中的注释了：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-fca483c577435efc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110175559.png"></p>
-<p>这玩意默认的控制了样式，然后再往下看到一个方法：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-54f7fd8444a953dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110175911.png"></p>
-<p>他说大部分情况足够用了，但是这不是出来问题么，于是到android的values中的attr下找，</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-e5a69f67b3b10c3d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<p>嗯很贴心，行数都截出来了。顶层默认实现了个布局，在CheckBoxPreference的onBindView方法中出现了个id和一个方法：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-30381fbc2e2d3ff8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110181103.png"></p>
-<p>id点进去能找到个布局，然后再父类TwoStatePreference中可以看到这个方法里面写了什么，注意看上面的布局控件的id，你没看错，就是覆盖了preference_material.xml 中的布局：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-c2fb7896c6189aba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20161110181315.png"></p>
-<p>附上答案链接 <a href="http://stackoverflow.com/questions/4469514/how-to-customize-text-color-of-the-checkboxpreference-title" target="_blank" rel="external">http://stackoverflow.com/questions/4469514/how-to-customize-text-color-of-the-checkboxpreference-title</a></p>
+        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script>hljs.initHighlightingOnLoad();</script>  
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-0fb31dfbb366a918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721125018.png"></p>
+<p>###出现原因<br>RT,在Andoridsutdio中调用.so库出现如现标题所示错误，该怎么解决。首先出现这个错误的原因是因为你的cpu架构是64位的。而你的.so库在编译的时候没有支持64位cpu。<strong>  如果这个.so的库是你自己弄的，那你重新生成下支持64位cpu的.so库出来就行了，剩下的文字就不用看了，本文适用于你没法对.so做操作的朋友。</strong> 查看cpu架构，可以通过adb shell 命令。进入/system/目录下有一个build.prop文件，这个里面有一行 ro.product.cpu.abi=xx就是你所要的信息，具体命令如下:</p>
+<pre><code>adb shell
+cd /system
+cat build.prop
+</code></pre><p>apk包在安装的时候，系统会把包中与自己的abi对应的lib目录中的so库文件拷贝到system分区中，32位机器中只有一个目录/system/lib，64位机器中有两个目录/system/lib和/system/lib64，app启动进行链接时，64位机器中会先到/system/lib64目录中去找，这时候肯定找不到。如果没有找到再到/system/lib目录中去找。如果你把32位的so库拷贝到了lib64目录中，会导致链接失败，同样，64位的so库被拷贝到lib目录中也会导致失败，所以so库要和目录一一对应。</p>
+<p>###解决方案<br>首先我的目录结构是这样的：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-be5473a00f8f04a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721123538.png"><br>我的.so并没有放在新建的jniLibs目录中，这个关系应该不大，两种方式都可以。<br>我的cpu架构是 ro.product.cpu.abi=arm64-v8a<br>而我的只有一个CPU架构就是armebi-v7a,我们要做的就是阻止生成arm64-v8a;<br>正常情况打开apk的lib结构如下：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-5e5183dd73f1ac09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721124748.png"></p>
+<p>方案如下：</p>
+<ul>
+<li>首先在project目录下的 gradle.properties中添加一句 <pre><code>android.useDeprecatedNdk=true
+</code></pre></li>
+<li>在app的build.gradle中的defaulConfig下添加如下：<pre><code>ndk {  
+  abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot;, &quot;mips&quot;
+}
+</code></pre></li>
+</ul>
+<p>这时候你解压开生成的apk包，会发现目录lib结构如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-df30fc0704288587.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721124539.png"></p>
+<p>OK，这样就解决了我的这个问题，网络上有一些别的阻止生成arm64-v8a，但是不好使。</p>
 
         
             <div class="donate-container">
     <div class="donate-button">
-        <button id="donate-button">赞赏</button>
+        <button id="donate-button">donate</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
         <img id="donate-img" src="" data-src="/img/avatar.jpg">

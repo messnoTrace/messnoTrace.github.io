@@ -11,7 +11,7 @@
 
     <title>
         
-        用androidstudio编写第一个xposed模块 - 乱逃的博客 | notrace&#39;s Blog
+        关于Unable to resolve dependency for xxCould not resolve library的解决方案 - 乱逃的博客 | notrace&#39;s Blog
         
     </title>
 
@@ -119,11 +119,11 @@
 
 <div class="post-container">
     <div class="post-title">
-        用androidstudio编写第一个xposed模块
+        关于Unable to resolve dependency for xxCould not resolve library的解决方案
     </div>
 
     <div class="post-meta">
-        <span class="attr">Post：<span>2019-04-05 10:36:55</span></span>
+        <span class="attr">Post：<span>2019-04-05 10:39:39</span></span>
         
         </span>
         <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
@@ -131,116 +131,16 @@
 </span>
     </div>
     <div class="post-content ">
-        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
-<p><script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  </p>
-<p><script>hljs.initHighlightingOnLoad();</script><br>前提：你的手机装了xposedinstaller ，已经获取root权限，否则以下内容不用看了。<br>参考链接:<a href="https://blog.csdn.net/mrglaucusss/article/details/50963542" target="_blank" rel="external">https://blog.csdn.net/mrglaucusss/article/details/50963542</a></p>
-<p>####配置准备工作<br>我的as版本是3.1的。所以基于此版本做操作</p>
-<ul>
-<li>新建一个工程包名随便取。我取了com.notrace</li>
-<li><p>MainActivity代码简单如下:</p>
-<pre><code>          package com.notrace;
-    import android.support.v7.app.AppCompatActivity;
-  import android.os.Bundle;
-  import android.view.View;
-  import android.widget.Toast;
-
-  public class MainActivity extends AppCompatActivity {
-
-  @Override
-    protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main);
-      findViewById(R.id.buttonPanel).setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-          Toast.makeText(MainActivity.this,hook(),Toast.LENGTH_SHORT).show();
-          }
-      });
-  }
-
-  public String hook(){
-  return &quot;未被劫持&quot;;
-  }
-}
-</code></pre></li>
-</ul>
-<p>很简单，一个button点击弹出toast，显示hook函数返回值,我的目标就是修改这个hook的返回值</p>
-<ul>
-<li><p>修改清单文件，在application节点下添加</p>
-<pre><code>              &lt;meta-data
-    android:name=&quot;xposedmodule&quot;
-    android:value=&quot;true&quot; /&gt;
-&lt;meta-data
-    android:name=&quot;xposeddescription&quot;
-    android:value=&quot;你猜猜&quot; /&gt;
-&lt;meta-data
-    android:name=&quot;xposedminversion&quot;
-    android:value=&quot;54&quot; /&gt;
-</code></pre></li>
-</ul>
-<p>第一个表示是否是xposed模块<br>第二个是描述，随便你写<br>第三个是最低的api版本支持</p>
-<ul>
-<li><p>修改app/gradle</p>
-<pre><code>      repositories {
-    jcenter()
-}
-dependencies {
-  compileOnly &apos;de.robv.android.xposed:api:82&apos;
-  compileOnly &apos;de.robv.android.xposed:api:82:sources&apos;
-  implementation &apos;com.android.support:appcompat-v7:27.1.1&apos;
-  implementation &apos;com.android.support.constraint:constraint-layout:1.1.0&apos;
-  testImplementation &apos;junit:junit:4.12&apos;
-  androidTestImplementation &apos;com.android.support.test:runner:1.0.2&apos;
-  androidTestImplementation &apos;com.android.support.test.espresso:espresso-core:3.0.2&apos;
-
-}
-</code></pre></li>
-</ul>
-<p>注意，上面两个一定要修改为compileOnly 如果你是低版本的as可以改成provided </p>
-<p>#####代码</p>
-<ul>
-<li>新建HookTest 类：</li>
-</ul>
-<pre><code>          package com.notrace;
-
-        import de.robv.android.xposed.IXposedHookLoadPackage;
-        import de.robv.android.xposed.XC_MethodHook;
-        import de.robv.android.xposed.XposedBridge;
-      import de.robv.android.xposed.XposedHelpers;
-      import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
-      public class HookTest implements IXposedHookLoadPackage {
-          @Override
-          public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam)           throws Throwable {
-
-
-    if(loadPackageParam.packageName.equals(&quot;com.notrace&quot;)){
-        XposedBridge.log(&quot;NOTRACE&quot;+loadPackageParam.packageName);
-
-        Class clazz=loadPackageParam.classLoader.loadClass(&quot;com.notrace.MainActivity&quot;);
-
-        XposedHelpers.findAndHookMethod(clazz, &quot;hook&quot;, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-            }
-
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                param.setResult(&quot;你已经被劫持了&quot;);
-            }
-        });
-    }
-}
-  }
-</code></pre><ul>
-<li>添加xposed入口，新建assets：<img src="https://upload-images.jianshu.io/upload_images/1453857-7f9d3d644e31ea0b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="微信截图_20180511182235.png"></li>
-</ul>
-<p>xposed_init内容如下：</p>
-<pre><code>com.notrace.HookTest
-</code></pre><ul>
-<li>至此结束，然后如果你没有禁用instant run 那么你就得打一个带签名的安装包，然后安装到手机上，然后再xposed installer模块中勾选你编写的module，然后手机重启生效。</li>
-</ul>
+        <p>先介绍下背景，环境是Androidstudio3.1.3，没错，截止目前是最新的，在不久之前，我用的是3.1.2，然后新建项目，敲上代码，implemention 各种顺手的library，毛问题都没有，升级了3.1.3之后，我想加一个库，结果出现了如下的各种问题。<img src="https://upload-images.jianshu.io/upload_images/1453857-4489eca9ee9892f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110232.png"></p>
+<p>一开始我以为是库的问题，然后一顿google搜索：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-b767224e5beb26ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110400@2x.png"></p>
+<p>眼睛一亮，看到第二个答案直接出现关键词androidstudio3.0，心里顿时一阵鸡冻，点进去看看答案，直接找认同最多的答案：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-2d2ff13fcdfab998.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110636@2x.png"></p>
+<p>意思是啥呢，大概就是说在andoridsutio2.x向3.x迁移的时候需要注意修改的东西，然并卵啊，我是直接上的3.X的新项目，没有迁移一说。随后又是一阵搜索，这下就尴尬了，答案基本上都是类似这样 的和不勾选gradle offline work这个选项，各种搜索各种的贼鸡儿蛋疼，年轻人你感觉得到绝望么，我在想，如果时光可以倒流，我肯定不手贱升级AndroidStudio，以前的2.x用起来，是毛问题都没有啊，google都救不了我了，我怕是没救了，绝望。添加不了任何库，这个问题，是真的真的很蛋疼啊，啥都要自己写，换你，你愿意么？反正我是不愿意。。<br>接着又是一波操作猛如虎，中间过程就不重要了，直接跳结果吧。<br>打开Terminal选项卡，输入 ./gradlew build（windows下是gradlew build提示没这个命令的，那就是你的gradle环境变量没配置）-&gt; 回车</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1453857-6a68fddb44522e5f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-111908.png"></p>
+<p>重点来了，<code>Connect to 127.0.0.1:1080 [/127.0.0.1] failed: Connection refused (Connection refused)</code> mmp 搜索：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-e4706390e41dfdf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-112122@2x.png"></p>
+<p>第一个点进去 <a href="https://blog.csdn.net/Rainminism/article/details/79713788" target="_blank" rel="external">链接</a><br>进去一看说我们使用了代理，要修改gradle.properties 文件，然后默默的打开我们的工程此文件一看，<img src="https://upload-images.jianshu.io/upload_images/1453857-23b4e09470d702f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-112620.png"></p>
+<p>意不意外，惊不惊喜，里面毛都没有啊，然后有没有人跟我一样，有点怀疑人生了，怎么办怎么办，继续搜索啊，果然，在一个答案中发现了自己是有多傻逼<br><img src="https://upload-images.jianshu.io/upload_images/1453857-f646707a7e7906d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113000@2x.png"></p>
+<p>重点来了，第一句，<code>Go to gradle scripts</code> ，卧槽，我想起来个东西，我们通常用的都是project视图啊，新建项目都是Android视图啊，要是你曾经看过Andorid视图，或者说你曾经解决过Andoridstudio遇到的坑，那你就明白了我说的是啥，吓得我赶紧切换到Android视图：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-834fb634600acea8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113441.png"></p>
+<p>果然，<code>globle properties</code><br>打开一看，mmp，果然存在：<img src="https://upload-images.jianshu.io/upload_images/1453857-5b2fc6c929a87506.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113550.png"><br>果断注释，重新编译，老铁，真的没毛病了。😌 mmp</p>
 
         
             <div class="donate-container">

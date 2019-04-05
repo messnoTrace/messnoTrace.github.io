@@ -48,7 +48,7 @@
             <img src="/img/avatar.jpg" />
         </div>
         <div class="name">
-            <i>messnoTrace</i>
+            <i>乱逃</i>
         </div>
     </div>
     <div class="contents" id="nav-content">
@@ -56,32 +56,32 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -89,7 +89,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-6"><a class="toc-link" href="#为了方便扩展，我们再来一个通信管理的list的管理容器"><span class="toc-text">为了方便扩展，我们再来一个通信管理的list的管理容器</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#我们再来写一个主工程模拟网络请求的东东"><span class="toc-text">我们再来写一个主工程模拟网络请求的东东</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><span class="toc-text">然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#完事了，我们模拟一下子module中如何获取"><span class="toc-text">完事了，我们模拟一下子module中如何获取</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#end"><span class="toc-text">end</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#我们再来写一个主工程模拟网络请求的东东"><span class="toc-text">我们再来写一个主工程模拟网络请求的东东</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><span class="toc-text">然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完事了，我们模拟一下子module中如何获取"><span class="toc-text">完事了，我们模拟一下子module中如何获取</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#end"><span class="toc-text">end</span></a></li></ol></li></ol></li></ol></li></ol>
 </div>
     
 </div>
@@ -100,7 +100,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -123,21 +123,23 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-04-05 10:35:18</span></span>
+        <span class="attr">Post：<span>2019-04-05 10:35:18</span></span>
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content ">
-        <p>如题：今天遇到一个需求，在子module中获取主module中通过网络接口异步返回的数据？嗯。。绕了一下午把自己绕进去了，简单来说，就两个回调完事。一个request，一个response。但是胡思乱想了一下午，很是尴尬，废话不多说，咱直接上代码。</p>
-<p>######首先一个request接口：<br>            public interface IRequest {<br>    public void request(IResponse response);<br>      }</p>
-<p>######然后一个response接口</p>
+        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
+<p><script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  </p>
+<p><script>hljs.initHighlightingOnLoad();</script><br>如题：今天遇到一个需求，在子module中获取主module中通过网络接口异步返回的数据？嗯。。绕了一下午把自己绕进去了，简单来说，就两个回调完事。一个request，一个response。但是胡思乱想了一下午，很是尴尬，废话不多说，咱直接上代码。</p>
+<p>###首先一个request接口：<br>            public interface IRequest {<br>    public void request(IResponse response);<br>      }</p>
+<p>###然后一个response接口</p>
 <pre><code>        public interface IResponse {
 void response(String result);
   }
-</code></pre><p>######一个通信管理<br>            public class BridgeManager {<br>    private IRequest request;</p>
+</code></pre><p>###一个通信管理<br>            public class BridgeManager {<br>    private IRequest request;</p>
 <pre><code>public void registerCallback(IRequest request) {
     this.request = request;
 }
@@ -150,10 +152,8 @@ public void setRequest(IRequest request) {
     this.request = request;
 }
 }
-</code></pre><h6 id="为了方便扩展，我们再来一个通信管理的list的管理容器"><a href="#为了方便扩展，我们再来一个通信管理的list的管理容器" class="headerlink" title="为了方便扩展，我们再来一个通信管理的list的管理容器"></a>为了方便扩展，我们再来一个通信管理的list的管理容器</h6><pre><code>        public class BrigeListManager {
-private static class SingletonHolder {
-
-    private static final BrigeListManager sInstance = new BrigeListManager();
+</code></pre><p>###为了方便扩展，我们再来一个通信管理的list的管理容器<br>            public class BrigeListManager {<br>    private static class SingletonHolder {</p>
+<pre><code>    private static final BrigeListManager sInstance = new BrigeListManager();
 }
 
 public static BrigeListManager getInstance() {
@@ -170,7 +170,7 @@ public void setBridgeManager(BridgeManager bridgeManager) {
     this.bridgeManager = bridgeManager;
 }
  }
-</code></pre><h6 id="我们再来写一个主工程模拟网络请求的东东"><a href="#我们再来写一个主工程模拟网络请求的东东" class="headerlink" title="我们再来写一个主工程模拟网络请求的东东"></a>我们再来写一个主工程模拟网络请求的东东</h6><pre><code>      public class MainModuleImpl extends BridgeManager{
+</code></pre><h3 id="我们再来写一个主工程模拟网络请求的东东"><a href="#我们再来写一个主工程模拟网络请求的东东" class="headerlink" title="我们再来写一个主工程模拟网络请求的东东"></a>我们再来写一个主工程模拟网络请求的东东</h3><pre><code>      public class MainModuleImpl extends BridgeManager{
 public MainModuleImpl(){
 
     registerCallback(new IRequest() {
@@ -189,12 +189,12 @@ public MainModuleImpl(){
     });
 }
    }
-</code></pre><h6 id="然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><a href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下" class="headerlink" title="然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下"></a>然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</h6><pre><code>        public class MainModule {
+</code></pre><h3 id="然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><a href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下" class="headerlink" title="然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下"></a>然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</h3><pre><code>        public class MainModule {
 MainModule(){
     BrigeListManager.getInstance().setBridgeManager(new MainModuleImpl());
 }
  }
-</code></pre><h6 id="完事了，我们模拟一下子module中如何获取"><a href="#完事了，我们模拟一下子module中如何获取" class="headerlink" title="完事了，我们模拟一下子module中如何获取"></a>完事了，我们模拟一下子module中如何获取</h6><pre><code>          public class Test {
+</code></pre><h3 id="完事了，我们模拟一下子module中如何获取"><a href="#完事了，我们模拟一下子module中如何获取" class="headerlink" title="完事了，我们模拟一下子module中如何获取"></a>完事了，我们模拟一下子module中如何获取</h3><pre><code>          public class Test {
 public static void main(String args[]) {
 
 
@@ -215,7 +215,7 @@ public static void main(String args[]) {
         
             <div class="donate-container">
     <div class="donate-button">
-        <button id="donate-button">赞赏</button>
+        <button id="donate-button">donate</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
         <img id="donate-img" src="" data-src="/img/avatar.jpg">

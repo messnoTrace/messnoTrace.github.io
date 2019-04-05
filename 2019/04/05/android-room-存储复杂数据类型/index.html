@@ -11,7 +11,7 @@
 
     <title>
         
-        乱逃的博客 | notrace&#39;s Blog
+        android room 存储复杂数据类型 - 乱逃的博客 | notrace&#39;s Blog
         
     </title>
 
@@ -48,7 +48,7 @@
             <img src="/img/avatar.jpg" />
         </div>
         <div class="name">
-            <i>messnoTrace</i>
+            <i>乱逃</i>
         </div>
     </div>
     <div class="contents" id="nav-content">
@@ -56,32 +56,32 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -100,7 +100,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -119,41 +119,83 @@
 
 <div class="post-container">
     <div class="post-title">
-        
+        android room 存储复杂数据类型
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-04-05 00:07:17</span></span>
+        <span class="attr">Post：<span>2019-04-05 11:21:13</span></span>
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content ">
-        <p>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:</p>
-<pre><code>productFlavor{
-          baidu {
-          }
-        xiaomi{}
-         wandoujia{}
+        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+<script>hljs.initHighlightingOnLoad();</script>  
+
+
+
+
+<p>首先看此文章的都假设你已经看过了room的简单用法，如果没有看过，那你可能需要先去看看了。<br>假设，我们从后台返回一个数据类型是这样的：    </p>
+<pre><code>    public class News{
+      public long id;
+      public String title;
+      public String title;
+      public List&lt;Tag&gt;tags;
     }
-</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p>
-<p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p>
-<p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p>
-<pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-</code></pre><p>然后application</p>
-<pre><code>tools:replace=&quot;android:icon&quot; 
-android:icon=&quot;@drawable/icon_all&quot;
-</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p>
-<p>剩下的就靠小伙伴么自己摸索了。。。。</p>
+
+  public class Tag{
+    public long id;
+    public String name;
+}
+</code></pre><p>这种数据类型就比较很常见了，当然了，你第一反应可能是： 这个哪里复杂了，嗯，说不复杂确实不复杂，说复杂呢，是因为用room的话，确实比较麻烦，说白了，就是如何用 room存储带有lis<object>类型的数据。ok话不多说，我们直接上代码：</object></p>
+<p>###bean的改造</p>
+<pre><code>@Entity(tableName = &quot;news&quot;)
+ public class News{
+@PrimaryKey(autoGenerate = true)
+  public long id;
+  public String title;
+  public String title;
+ @Ignore
+  public List&lt;Tag&gt;tags;
+} 
+
+
+ @Entity(tableName = &quot;tags&quot;)
+ public class Tag{
+       @PrimaryKey(autoGenerate = true)
+        public long id;
+        public String name;
+
+         @ColumnInfo(name = &quot;news_id&quot;)
+      public long newsid;
+  }
+</code></pre><p>然后我们重新添加一个bean：NewsWithTags:</p>
+<pre><code>public class NewsWithTags{
+@Embedded
+public News news;
+
+  @Relation(parentColumn = &quot;id&quot;,entityColumn = &quot;news_id&quot;)
+   public List&lt;Tag&gt; tags;
+    }
+</code></pre><p>注意看这个bean，没有table注解@Embedded 注解的是news这个bean。<br>@Relation 中parentColumn对应的是news中的id，entityColumn对应的是tag中的news_id,这个值实际上就等于news中的id。</p>
+<p>####Dao<br>    NewsWithTagDao:</p>
+<pre><code> @Dao
+public interface NewsWithTaDao {
+@Transaction
+@Query(&quot;SELECT * FROM news&quot;)
+List&lt;NewsWithTag&gt; getAllNews();
+}
+</code></pre><blockquote>
+<p>其他没啥好说的，添加数据要先添加news，然后根据news 的id添加tag，删除数据，要先根据news的id删除tag表中的数据</p>
+</blockquote>
 
         
             <div class="donate-container">
     <div class="donate-button">
-        <button id="donate-button">赞赏</button>
+        <button id="donate-button">donate</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
         <img id="donate-img" src="" data-src="/img/avatar.jpg">

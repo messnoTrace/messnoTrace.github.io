@@ -11,7 +11,7 @@
 
     <title>
         
-        乱逃的博客 | notrace&#39;s Blog
+        Android 多渠道打包修改app name，icon - 乱逃的博客 | notrace&#39;s Blog
         
     </title>
 
@@ -48,7 +48,7 @@
             <img src="/img/avatar.jpg" />
         </div>
         <div class="name">
-            <i>messnoTrace</i>
+            <i>乱逃</i>
         </div>
     </div>
     <div class="contents" id="nav-content">
@@ -56,32 +56,32 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -100,7 +100,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -119,42 +119,43 @@
 
 <div class="post-container">
     <div class="post-title">
-        
+        Android 多渠道打包修改app name，icon
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-04-05 00:07:17</span></span>
+        <span class="attr">Post：<span>2019-04-05 11:44:02</span></span>
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content ">
-        <p><img src="http://upload-images.jianshu.io/upload_images/1453857-0fb31dfbb366a918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721125018.png"></p>
-<p>###出现原因<br>RT,在Andoridsutdio中调用.so库出现如现标题所示错误，该怎么解决。首先出现这个错误的原因是因为你的cpu架构是64位的。而你的.so库在编译的时候没有支持64位cpu。<strong>  如果这个.so的库是你自己弄的，那你重新生成下支持64位cpu的.so库出来就行了，剩下的文字就不用看了，本文适用于你没法对.so做操作的朋友。</strong> 查看cpu架构，可以通过adb shell 命令。进入/system/目录下有一个build.prop文件，这个里面有一行 ro.product.cpu.abi=xx就是你所要的信息，具体命令如下:</p>
-<pre><code>adb shell
-cd /system
-cat build.prop
-</code></pre><p>apk包在安装的时候，系统会把包中与自己的abi对应的lib目录中的so库文件拷贝到system分区中，32位机器中只有一个目录/system/lib，64位机器中有两个目录/system/lib和/system/lib64，app启动进行链接时，64位机器中会先到/system/lib64目录中去找，这时候肯定找不到。如果没有找到再到/system/lib目录中去找。如果你把32位的so库拷贝到了lib64目录中，会导致链接失败，同样，64位的so库被拷贝到lib目录中也会导致失败，所以so库要和目录一一对应。</p>
-<p>###解决方案<br>首先我的目录结构是这样的：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-be5473a00f8f04a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721123538.png"><br>我的.so并没有放在新建的jniLibs目录中，这个关系应该不大，两种方式都可以。<br>我的cpu架构是 ro.product.cpu.abi=arm64-v8a<br>而我的只有一个CPU架构就是armebi-v7a,我们要做的就是阻止生成arm64-v8a;<br>正常情况打开apk的lib结构如下：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-5e5183dd73f1ac09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721124748.png"></p>
-<p>方案如下：</p>
-<ul>
-<li>首先在project目录下的 gradle.properties中添加一句 <pre><code>android.useDeprecatedNdk=true
-</code></pre></li>
-<li>在app的build.gradle中的defaulConfig下添加如下：<pre><code>ndk {  
-  abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot;, &quot;mips&quot;
-}
-</code></pre></li>
-</ul>
-<p>这时候你解压开生成的apk包，会发现目录lib结构如下：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1453857-df30fc0704288587.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160721124539.png"></p>
-<p>OK，这样就解决了我的这个问题，网络上有一些别的阻止生成arm64-v8a，但是不好使。</p>
+        <p><link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  </p>
+<p><script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  </p>
+<p><script>hljs.initHighlightingOnLoad();</script><br>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:</p>
+<pre><code>productFlavor{
+          baidu {
+          }
+        xiaomi{}
+         wandoujia{}
+    }
+</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p>
+<p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p>
+<p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p>
+<pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+</code></pre><p>然后application</p>
+<pre><code>tools:replace=&quot;android:icon&quot; 
+android:icon=&quot;@drawable/icon_all&quot;
+</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p>
+<p>剩下的就靠小伙伴么自己摸索了。。。。</p>
 
         
             <div class="donate-container">
     <div class="donate-button">
-        <button id="donate-button">赞赏</button>
+        <button id="donate-button">donate</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
         <img id="donate-img" src="" data-src="/img/avatar.jpg">
