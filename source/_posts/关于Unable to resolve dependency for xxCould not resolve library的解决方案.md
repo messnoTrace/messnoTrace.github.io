@@ -1,6 +1,6 @@
 ---
-layout: androidstudio
-title: library的解决方案
+layout:Androd
+title: 关于Unable to resolve dependency for xxCould not resolve library的解决方案
 date: 2019-04-05 10:39:39
 tags:
 ---

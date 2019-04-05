@@ -1,21 +1,21 @@
 ---
 title: Android如何在子module中取获取主module中通过网络接口请求返回的数据？
 date: 2019-04-05 10:35:18
-tags:
+tags:Home
 ---
 如题：今天遇到一个需求，在子module中获取主module中通过网络接口异步返回的数据？嗯。。绕了一下午把自己绕进去了，简单来说，就两个回调完事。一个request，一个response。但是胡思乱想了一下午，很是尴尬，废话不多说，咱直接上代码。
-######首先一个request接口：
+###首先一个request接口：
             public interface IRequest {
     public void request(IResponse response);
       }
 
-######然后一个response接口
+###然后一个response接口
 
             public interface IResponse {
     void response(String result);
       }
 
-######一个通信管理
+###一个通信管理
             public class BridgeManager {
     private IRequest request;
 
@@ -31,7 +31,7 @@ tags:
         this.request = request;
     }
     }
-###### 为了方便扩展，我们再来一个通信管理的list的管理容器
+###为了方便扩展，我们再来一个通信管理的list的管理容器
             public class BrigeListManager {
     private static class SingletonHolder {
 
@@ -53,7 +53,7 @@ tags:
     }
      }
 
-######   我们再来写一个主工程模拟网络请求的东东
+###   我们再来写一个主工程模拟网络请求的东东
 
           public class MainModuleImpl extends BridgeManager{
     public MainModuleImpl(){
@@ -76,7 +76,7 @@ tags:
        }
 
 
-######   然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下
+###  然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下
             public class MainModule {
     MainModule(){
         BrigeListManager.getInstance().setBridgeManager(new MainModuleImpl());
@@ -84,7 +84,7 @@ tags:
      }
 
 
-###### 完事了，我们模拟一下子module中如何获取
+### 完事了，我们模拟一下子module中如何获取
 
               public class Test {
     public static void main(String args[]) {

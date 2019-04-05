@@ -1,5 +1,6 @@
-搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：
-                        
+搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:
+
+                   
                     productFlavor{
                               baidu {
                               }

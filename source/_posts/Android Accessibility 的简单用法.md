@@ -4,6 +4,7 @@ Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或
 #####步骤
 1. 创建CheckAccessbilityServices：
  CheckAccessbilityServices 继承自AccessibilityService，并在清单文件applcation节点中配置，并加入权限
+    
           <service   
            android:name=".CheckAccessbilityServices"   
            android:enabled="true"        
@@ -16,8 +17,9 @@ Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或
              <meta-data
                    android:name="android.accessibilityservice"
                    android:resource="@xml/check_accessibility_config" />
-          </service>
+          </service>'
 2.在res目录下创建文件夹xml，并创建步骤一中check_accessibility_config.xml
+
             <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"                   android:description="@string/check_click" 
                 android:packageNames="com.notrace"      
             android:accessibilityEventTypes=    "typeAllMask|typeViewClicked|typeViewFocused|typeNotificationStateChanged|typeWindowStateChanged"    
@@ -40,11 +42,12 @@ Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或
 描述你在系统辅助功能开关中看到的描述
 
 3.CheckAccessbilityServices  实现onAccessibilityEvent和onInterrupt方法
-
+    
+    
                     @Override  
                 public void onAccessibilityEvent(AccessibilityEvent event) {  
                           //过滤包名
-                          String pkgName = event.getPackageName().toString();    
+						String pkgName = event.getPackageName().toString();  
                           if(!"com.notrace".equals(pkgName))
                                 return;
                         switch (type){  
@@ -64,6 +67,7 @@ Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或
                          break;
                       }                     
                }  
+
 
 注意这里有个叫com.notrace:id/btn_click的，就是前面的那个按钮，我取id叫btn_click,这个东西可以通过eclipse提供的一个工具dump查看,如下图：
 
