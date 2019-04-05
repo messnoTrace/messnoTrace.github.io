@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        多线程中wait/notify的一些理解，以及最经典的生产者和消费者 - 乱逃的博客 | notrace&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> your will my hands </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>messnoTrace</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> your will my hands </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        多线程中wait/notify的一些理解，以及最经典的生产者和消费者
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 10:37:28</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>#####前言<br>说到wait，很容易想到一个常问的面试题，wait和sleep的区别。简单的理解就是，wait是object的方法，调用wait()，线程会进去等待状态，并且会释放出锁，非阻塞的，等待持有锁的线程调用notify()，才会继续执行。sleep是Thread的方法，sleep()会让当前线程暂停一段时间，但是不会释放锁，是阻塞的。</p>
+<p>#####Wait/notify在线程中的通信<br>我们先看下面一段代码：<br> class Data:</p>
+<pre><code>      package com.notrace;
+      import java.util.ArrayList;
+      import java.util.List;
+      public class Data {
+  private List list=new ArrayList();
+    public void add() {
+      list.add(&quot;notrace&quot;);
+  }
+    public int getSize() {
+  return list.size();
+  }
+}
+</code></pre><p>ThreadA：</p>
+<pre><code>  package com.notrace;     
+  public class ThreadA extends Thread{
+ private Data data;
+ public ThreadA(Data data) {
+    super();
+    this.data=data;
+}
+
+@Override
+public void run() {
+    try {
+        for (int i = 0; i &lt; 10; i++) {
+            data.add();
+            System.out.println(&quot;添加了&quot;+(i+1)+&quot;个元素&quot;);
+            Thread.sleep(1000);
+
+        }
+    } catch (Exception e) {
+    }
+}    
+ }
+</code></pre><p>ThreadB:</p>
+<pre><code>package com.notrace;
+public class ThreadB extends Thread{
+
+private Data data;
+public ThreadB(Data data) {
+    super();
+    this.data=data;
+}
+
+@Override
+public void run() {
+    try {
+        while (true) {
+    System.out.print(&quot;&quot;);
+            if(data.getSize()==6) {
+                System.out.println(&quot;==6,线程B要退出了&quot;);
+                throw new InterruptedException();
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+}
+</code></pre><p>Test:</p>
+<pre><code>  package com.notrace;
+public class Test {
+public static  void  main(String []args) {
+    Data data=new Data();
+    ThreadA threadA=new ThreadA(data);
+    threadA.setName(&quot;A&quot;);
+    threadA.start();
+    ThreadB threadB=new ThreadB(data);
+    threadB.setName(&quot;B&quot;);
+    threadB.start();
+}
+}
+</code></pre><p>运行test，结果如下：<img src="https://upload-images.jianshu.io/upload_images/1453857-21d6e937cb766da6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.png"></p>
+<p>两个线程之间实现了通信，但是有一个弊端，就是线程B，要不停的循环，这样会很浪费资源，那么有没有什么好的办法去实现多个线程通信呢，答案是肯定的，就是wait/notify的机制。</p>
+<p>###wait/notify机制简单介绍<br>举个栗子，就说我们日常生活中的餐厅吧，厨师和服务员之间的交互，<br>厨师做完菜，放到传递台上，服务员来传递台上取，往桌上送。<br> 1）厨师做完一道菜的时间是不确定的，所以把菜放到传递台上的时间也是不确定的。<br>2）服务员取菜的时间，取决于厨师，所以，厨师做完菜之前，服务员，就有了等待(wait)的状态。<br>3）服务员是怎么取到菜呢？这取决于厨师，简单点来说，厨师做完菜，放到传递台上，然后大喊一声：“红烧肉好了，来上菜。”然后服务员就过来取了，这个大喊一声，就相当于notify的过程。<br>4）这个情景中就有wait/notify的机制了，那么如何用代码来实现呢？</p>
+<p>####wait/notify机制简单实现<br>方法wait（）的作用是使当前执行代码的线程进行等待，wait（）方法是Object类的方法，该方法用来将当前线程置入“预执行队列”中，并且在wait（）所在的代码行处停止执行，直到接到通知或被中断为止。在调用wait（）之前，<strong>线程必须获得该对象的对象级别锁，即只能在同步方法或同步块中调用wait（）方法。在执行wait（）方法后，当前线程释放锁。</strong> 在从wait（）返回前，线程与其他线程竞争重新获得锁。如果调用wait（）时没有持有适当的锁，则抛出IllegalMonitorStateException，它是RuntimeException的一个子类，因此，不需要try-catch语句进行捕捉异常。<br><strong>方法notify（）也要在同步方法或同步块中调用，即在调用前，线程也必须获得该对象的对象级别锁。如果调用notify（）时没有持有适当的锁，也会抛出IllegalMonitorStateException。</strong>该方法用来通知那些可能等待该对象的对象锁的其他线程，如果有多个线程等待，则由线程规划器随机挑选出其中一个呈wait状态的线程，对其发出通知notify，并使它等待获取该对象的对象锁。需要说明的是，在执行notify（）方法后，当前线程不会马上释放该对象锁，呈wait状态的线程也并不能马上获取该对象锁，要等到执行notify（）方法的线程将程序执行完，也就是退出synchronized代码块后，当前线程才会释放锁，而呈wait状态所在的线程才可以获取该对象锁。当第一个获得了该对象锁的wait线程运行完毕以后，它会释放掉该对象锁，此时如果该对象没有再次使用notify语句，则即便该对象已经空闲，其他wait状态等待的线程由于没有得到该对象的通知，还会继续阻塞在wait状态，直到这个对象发出一个notify或notifyAll。<br>   用一句话来总结一下wait和notify：wait使线程停止运行，而notify使停止的线程继续运行。<br>代码测试如下：<br>ThreadA:</p>
+<pre><code>      package com.notrace;
+
+public class ThreadA extends Thread {
+private Object lock;
+
+public ThreadA(Object lock) {
+    super();
+    this.lock = lock;
+}
+
+@Override
+public void run() {
+    try {
+        synchronized (lock) {
+            System.out.println(&quot;begin wait time&quot; +       System.currentTimeMillis());
+            lock.wait();
+            System.out.println(&quot;end wait time&quot; + System.currentTimeMillis());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+}
+</code></pre><p>ThreadB:</p>
+<pre><code>        package com.notrace;
+
+public class ThreadB extends Thread {
+
+private Object lock;
+
+public ThreadB(Object lock) {
+    super();
+    this.lock = lock;
+}
+
+@Override
+public void run() {
+
+    try {
+
+        synchronized (lock) {
+            System.out.println(&quot;begin notify time:&quot; + System.currentTimeMillis());
+            lock.notify();
+            System.out.println(&quot;end nofity time:&quot; + System.currentTimeMillis());
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println(e.toString());
+    }
+}
+
+}
+</code></pre><p>Test:</p>
+<pre><code>package com.notrace;
+</code></pre><p>public class Test {<br>    public static void main(String[] args) {</p>
+<pre><code>    try {
+        Object lock = new Object();
+        ThreadA threadA = new ThreadA(lock);
+        threadA.setName(&quot;A&quot;);
+        threadA.start();
+
+        Thread.sleep(3000);
+        ThreadB threadB = new ThreadB(lock);
+        threadB.setName(&quot;B&quot;);
+        threadB.start();
+    } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+
+}
+
+  }
+</code></pre><p>运行结果如下图：<br>  <img src="https://upload-images.jianshu.io/upload_images/1453857-070a66f33dd162b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="2.png"></p>
+<p>从打印结果来看，3S后线程别nofity唤醒.<br>我们再来实现下之前的上面那个例子：<br>ThreadA:</p>
+<pre><code>        package com.notrace;
+
+    public class ThreadA extends Thread {
+private Object lock;
+
+public ThreadA(Object lock) {
+    super();
+    this.lock = lock;
+}
+
+@Override
+public void run() {
+    try {
+        synchronized (lock) {
+            if(Data.getSize()!=6)
+            System.out.println(&quot;begin wait time&quot; +       System.currentTimeMillis());
+            lock.wait();
+            System.out.println(&quot;end wait time&quot; + System.currentTimeMillis());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+}
+</code></pre><p>ThreadB:</p>
+<pre><code>        package com.notrace;
+  public class ThreadB extends Thread{
+
+    private Object  lock;
+  public ThreadB(Object lock) {
+    super();
+    this.lock=lock;
+}
+
+@Override
+public void run() {
+    try {
+
+    synchronized (lock) {
+        for (int i = 0; i &lt; 10; i++) {
+            Data.add();
+            if(Data.getSize()==6) {
+                lock.notify();
+                System.out.println(&quot;发出通知&quot;);
+            }
+            System.out.println(&quot;添加了&quot;+(i+1)+&quot;个元素&quot;);
+            Thread.sleep(1000);
+        }        
+
+    }
+
+} catch (Exception e) {
+    e.printStackTrace();
+    System.out.println(e.toString());
+}
+}
+
+}
+</code></pre><p>Data:</p>
+<pre><code>        package com.notrace;
+
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class Data {
+private static List list = new ArrayList();
+
+public static void add() {
+    list.add(&quot;notrace&quot;);
+}
+
+public static int getSize() {
+    return list.size();
+}
+    }
+</code></pre><p>Test:</p>
+<pre><code>      package com.notrace;
+
+    public class Test {
+public static void main(String[] args) {
+
+    try {
+        Object lock = new Object();
+        ThreadA threadA = new ThreadA(lock);
+        threadA.setName(&quot;A&quot;);
+        threadA.start();
+
+        Thread.sleep(50);
+        ThreadB threadB = new ThreadB(lock);
+        threadB.setName(&quot;B&quot;);
+        threadB.start();
+    } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+
+}
+
+}
+</code></pre><p>运行结果如下:<br><img src="https://upload-images.jianshu.io/upload_images/1453857-584bcf34b652abb9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="3.png"></p>
+<p>日志说明了一个问题,notify()调用之后，并不会立即释放锁，而是会接着执行后面的代码，执行完了，才会释放锁。</p>
+<p>synchronized可以将任何一个Object对象作为同步对象来看待，每个Object都实现了wait()和notify()。他们必须用被用在synchronized同步的区域内，wait()让区域内的线程进入等待状态，释放同步锁，notify()可以唤醒一个因调用了wait()而处于等待状态中的线程。被唤醒的线程继续执行wait()后面的代码。如果notify之后没有处于阻塞等待中的线程，就会被忽略。<br>关于释放锁，有以下几个结论，<br>1）执行完同步代码块，就会释放锁。<br>2）执行代码块的过程中，如果遇到异常而导致线程终止，也会释放锁。<br>3）调用wait()这个线程会释放锁。</p>
+<p>另外还有一点，需要提一下。notify()只会唤醒一个线程，所以在多线程的时候，可能会出现一些问题，所以，尽量用notifyAll()唤醒所有等待的线程 比较好。下面来看看另一个经典问题。</p>
+<p>####生产者/消费者模式</p>
+<p>#####一个生产者，一个消费者<br>废话不多说，直接看code.<br>生产者P:</p>
+<pre><code>            package com.notrace;
+
+  //生产者
+  public class P {
+private String lock;
+public P(String lock) {
+    super();
+    this.lock=lock;
+}
+public void setValue() {
+    try {
+        synchronized (lock) {
+            if(!ValueObj.value.equals(&quot;&quot;)) {
+                lock.wait();
+            }
+            String value=System.currentTimeMillis()+&quot;&quot;;
+            System.out.println(&quot;set的值：&quot;+value);
+            ValueObj.value=value;
+            lock.notify();
+        }
+    } catch (Exception e) {
+        // TODO: handle exception
+    }
+}
+}
+</code></pre><p>消费者C:</p>
+<pre><code>  package com.notrace;
+
+    //消费者
+    public class C {
+private String lock;
+public C(String lock) {
+    super();
+    this.lock=lock;
+}
+public void getValue() {
+try {
+    synchronized (lock) {
+        if(ValueObj.value.equals(&quot;&quot;)) {
+            lock.wait();
+        }
+        System.out.println(&quot;get的值:&quot;+ValueObj.value);
+        ValueObj.value=&quot;&quot;;
+        lock.notify();
+    }
+} catch (Exception e) {
+    // TODO: handle exception
+}
+}
+
+}
+</code></pre><p>线程P：</p>
+<pre><code>    package com.notrace;
+
+public class ThreadP extends Thread{
+
+private P p;
+public ThreadP(P p) {
+    super();
+    this.p=p;
+}
+@Override
+public void run() {
+    while(true) {
+        p.setValue();
+    }
+}
+}
+</code></pre><p>线程C：</p>
+<pre><code>            package com.notrace;
+
+  public class ThreadC extends Thread{
+private C c;
+public ThreadC(C c) {
+    super();
+    this.c=c;
+}
+@Override
+public void run() {
+    while(true) {
+        c.getValue();
+    }
+}
+}
+</code></pre><p>Run：</p>
+<pre><code>          package com.notrace;
+
+public class Run {
+public static void main(String []args) {
+    String lock=new String(&quot;&quot;);
+    P p=new P(lock);
+    C c=new C(lock);
+    ThreadP tP=new ThreadP(p);
+    ThreadC tC=new ThreadC(c);
+    tP.start();
+    tC.start();
+}
+
+}
+</code></pre><p>运行结果：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-eb6739d745cb9929.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4.png"></p>
+<p>可以看出来，是生产者，消费者，交替运行的。</p>
+<p>接下来变化一下:</p>
+<p>######多生产者，多消费者</p>
+<p>P:</p>
+<pre><code>    package com.notrace;
+
+  //生产者
+  public class P {
+private String lock;
+public P(String lock) {
+    super();
+    this.lock=lock;
+}
+public void setValue() {
+    try {
+        synchronized (lock) {
+            while(!ValueObj.value.equals(&quot;&quot;)) {
+                System.out.println(&quot;生产者:&quot;+Thread.currentThread().getName()+&quot;watting*&quot;);
+                lock.wait();
+            }
+            System.out.println(&quot;生产者:&quot;+Thread.currentThread().getName()+&quot;run*&quot;);
+            String value =System.currentTimeMillis()+&quot;&quot;;
+            ValueObj.value=value;
+            lock.notify();
+        }
+    } catch (Exception e) {
+        // TODO: handle exception
+    }
+}
+}
+</code></pre><p>C:</p>
+<pre><code>  package com.notrace;
+
+//消费者
+  public class C {
+private String lock;
+public C(String lock) {
+    super();
+    this.lock=lock;
+}
+public void getValue() {
+try {
+    synchronized (lock) {
+        while(ValueObj.value.equals(&quot;&quot;)) {
+            System.out.println(&quot;消费者:&quot;+Thread.currentThread().getName()+&quot;waitting&quot;);
+            lock.wait();
+        }
+        System.out.println(&quot;消费者:&quot;+Thread.currentThread().getName()+&quot;run&quot;);
+        System.out.println(&quot;get的值:&quot;+ValueObj.value);
+        ValueObj.value=&quot;&quot;;
+        lock.notify();
+    }
+} catch (Exception e) {
+    // TODO: handle exception
+}
+}
+
+}
+</code></pre><p>threadP，threadC一样:</p>
+<p>Run:</p>
+<pre><code>        package com.notrace;
+
+  public class Run {
+public static void main(String []args) {
+    try {
+        String lock=new String(&quot;&quot;);
+        P p=new P(lock);
+        C c=new C(lock);
+
+        ThreadP[] pThreadPs=new ThreadP[2];
+        ThreadC[]cThreadCs=new ThreadC[2];
+        for(int i=0;i&lt;2;i++) {
+            pThreadPs[i]=new ThreadP(p);
+            pThreadPs[i].setName(&quot;生产者&quot;+(i+1));
+            cThreadCs[i]=new ThreadC(c);
+            cThreadCs[i].setName(&quot;消费者&quot;+(i+1));
+            pThreadPs[i].start();
+            cThreadCs[i].start();
+        }
+
+        Thread.sleep(5000);    
+    } catch (Exception e) {
+        // TODO: handle exception
+    }
+
+
+}
+
+  }
+</code></pre><p>执行完：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-c2d2686d93ecd77d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="5.png"></p>
+<p>两个都是等待，而且还没执行完，是不是很奇怪。。。产生这种情况是因为唤醒的早了点， 生产者1唤醒了生产者2，然而生产者2发现产品并未被消费，所以生产者2也是wait状态。另外，还有种原因，就是连续唤醒同类。解决这种问题，就需要将P和C中的notify改成notifyAll()，将生产者和消费者一起唤醒，就ok了。</p>
+<p>咱接着变</p>
+<p>######一生产一消费：来操作栈<br>这个场景就是生产者向堆栈List中放数据，消费者从List中取数据。list最大容量是1:<br>p:</p>
+<pre><code>        package com.notrace;
+
+  //生产者
+  public class P {
+
+
+private MyStack stack;
+public P(MyStack stack) {
+    super();
+    this.stack=stack;
+
+}
+public void pushService() {
+    stack.push();
+}
+}
+</code></pre><p>C:</p>
+<pre><code>        package com.notrace;
+
+  //消费者
+public class C {
+
+private MyStack stack;
+public C(MyStack stack) {
+    super();
+    this.stack=stack;
+}
+
+public void popService() {
+    System.out.println(&quot;pop=&quot;+stack.pop());
+}
+  }
+</code></pre><p>MyStack:</p>
+<pre><code>        package com.notrace;
+
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class MyStack {
+  private List list=new ArrayList&lt;&gt;();
+  synchronized public void push() {
+try {
+    if(list.size()==1) {
+        this.wait();
+    }
+    list.add(&quot;notrace:&quot;+Math.random());
+    this.notify();
+    System.out.println(&quot;push=&quot;+list.size());
+} catch (Exception e) {
+    // TODO: handle exception
+}
+  }
+
+      synchronized public String pop() {
+String value=&quot;&quot;;
+try {
+    if(list.size()==0) {
+        System.out.println(&quot;pop操作&quot;+Thread.currentThread().getName());
+        this.wait();
+    }
+    value=&quot;&quot;+list.get(0);
+    list.remove(0);
+    this.notify();
+    System.out.println(&quot;pop&quot;+list.size());
+} catch (Exception e) {
+    // TODO: handle exception
+}
+return value;
+  }
+}
+</code></pre><p>ThreadP:</p>
+<pre><code>        package com.notrace;
+
+  public class ThreadP extends Thread{
+
+private P p;
+public ThreadP(P p) {
+    super();
+    this.p=p;
+}
+@Override
+public void run() {
+    while(true) {
+        System.out.print(&quot;&quot;);
+        p.pushService();
+//            p.setValue();
+
+    }
+}
+}
+</code></pre><p>ThreadC:</p>
+<pre><code>        package com.notrace;
+
+public class ThreadC extends Thread{
+private C c;
+public ThreadC(C c) {
+    super();
+    this.c=c;
+}
+@Override
+public void run() {
+    while(true) {
+        System.out.print(&quot;&quot;);
+        c.popService();
+  //            c.getValue();
+    }
+}
+  }
+</code></pre><p>Run:</p>
+<pre><code>package com.notrace;
+</code></pre><p>public class Run {<br>    public static void main(String []args) {</p>
+<pre><code>    MyStack stack=new MyStack();
+    P p=new P(stack);
+    C c=new C(stack);
+    ThreadP threadP=new ThreadP(p);
+    ThreadC threadC=new ThreadC(c);
+    threadP.start();
+    threadC.start();
+}
+}
+</code></pre><p>执行结果：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-eb44c5bbfbef7611.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="6.png"></p>
+<p>程序的结果是size不会大于1|。</p>
+<p>######一生产多消费：来操作栈<br>代码还是上面的那些，我们改一下Run：</p>
+<pre><code>        package com.notrace;
+
+public class Run {
+public static void main(String []args) {
+
+
+    MyStack stack=new MyStack();
+    P p=new P(stack);
+    C c1=new C(stack);
+    C c2=new C(stack);
+    C c3=new C(stack);
+    C c4=new C(stack);
+    C c5=new C(stack);
+    ThreadP threadP=new ThreadP(p);
+    ThreadC threadC1=new ThreadC(c1);
+    ThreadC threadC2=new ThreadC(c2);
+    ThreadC threadC3=new ThreadC(c3);
+    ThreadC threadC4=new ThreadC(c4);
+    ThreadC threadC5=new ThreadC(c5);
+    threadP.start();
+    threadC1.start();
+    threadC2.start();
+    threadC3.start();
+    threadC4.start();
+    threadC5.start();
+  }
+  }
+</code></pre><p>执行结果：<img src="https://upload-images.jianshu.io/upload_images/1453857-e4a1b50023c36141.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="7.png"></p>
+<p>假死状态了，多次执行。还可能会出现indexoutofbounce，这是因为条件改变时并没有得到及时的响应，引起了list.remove(0)报错，解决办法是将MyStack中的if()判断改为while()。多消费一生产，多消费多生产，也是一样的。改一下run里面的代码就行了</p>
+<p>好了，基本完事。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/零乱逃">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/messnoTrace">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

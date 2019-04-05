@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Android如何在子module中取获取主module中通过网络接口请求返回的数据？ - 乱逃的博客 | notrace&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> your will my hands </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>messnoTrace</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-6"><a class="toc-link" href="#为了方便扩展，我们再来一个通信管理的list的管理容器"><span class="toc-text">为了方便扩展，我们再来一个通信管理的list的管理容器</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#我们再来写一个主工程模拟网络请求的东东"><span class="toc-text">我们再来写一个主工程模拟网络请求的东东</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><span class="toc-text">然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#完事了，我们模拟一下子module中如何获取"><span class="toc-text">完事了，我们模拟一下子module中如何获取</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#end"><span class="toc-text">end</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> your will my hands </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Android如何在子module中取获取主module中通过网络接口请求返回的数据？
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 10:35:18</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>如题：今天遇到一个需求，在子module中获取主module中通过网络接口异步返回的数据？嗯。。绕了一下午把自己绕进去了，简单来说，就两个回调完事。一个request，一个response。但是胡思乱想了一下午，很是尴尬，废话不多说，咱直接上代码。</p>
+<p>######首先一个request接口：<br>            public interface IRequest {<br>    public void request(IResponse response);<br>      }</p>
+<p>######然后一个response接口</p>
+<pre><code>        public interface IResponse {
+void response(String result);
+  }
+</code></pre><p>######一个通信管理<br>            public class BridgeManager {<br>    private IRequest request;</p>
+<pre><code>public void registerCallback(IRequest request) {
+    this.request = request;
+}
+
+public IRequest getRequest() {
+    return request;
+}
+
+public void setRequest(IRequest request) {
+    this.request = request;
+}
+}
+</code></pre><h6 id="为了方便扩展，我们再来一个通信管理的list的管理容器"><a href="#为了方便扩展，我们再来一个通信管理的list的管理容器" class="headerlink" title="为了方便扩展，我们再来一个通信管理的list的管理容器"></a>为了方便扩展，我们再来一个通信管理的list的管理容器</h6><pre><code>        public class BrigeListManager {
+private static class SingletonHolder {
+
+    private static final BrigeListManager sInstance = new BrigeListManager();
+}
+
+public static BrigeListManager getInstance() {
+    return SingletonHolder.sInstance;
+}
+
+private BridgeManager bridgeManager;
+
+public BridgeManager getBridgeManager() {
+    return bridgeManager;
+}
+
+public void setBridgeManager(BridgeManager bridgeManager) {
+    this.bridgeManager = bridgeManager;
+}
+ }
+</code></pre><h6 id="我们再来写一个主工程模拟网络请求的东东"><a href="#我们再来写一个主工程模拟网络请求的东东" class="headerlink" title="我们再来写一个主工程模拟网络请求的东东"></a>我们再来写一个主工程模拟网络请求的东东</h6><pre><code>      public class MainModuleImpl extends BridgeManager{
+public MainModuleImpl(){
+
+    registerCallback(new IRequest() {
+        @Override
+        public void request(IResponse response) {
+
+            try {
+                Thread.sleep(3000);
+
+                System.out.print(&quot;耗时任务执行完毕&quot;);
+                response.response(&quot;给子module返回结果&quot;);
+            }catch (Exception e){
+
+            }
+        }
+    });
+}
+   }
+</code></pre><h6 id="然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下"><a href="#然后随便在写一个主工程中初始化的地方-具体情况具体考察，我只模拟一下下" class="headerlink" title="然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下"></a>然后随便在写一个主工程中初始化的地方,具体情况具体考察，我只模拟一下下</h6><pre><code>        public class MainModule {
+MainModule(){
+    BrigeListManager.getInstance().setBridgeManager(new MainModuleImpl());
+}
+ }
+</code></pre><h6 id="完事了，我们模拟一下子module中如何获取"><a href="#完事了，我们模拟一下子module中如何获取" class="headerlink" title="完事了，我们模拟一下子module中如何获取"></a>完事了，我们模拟一下子module中如何获取</h6><pre><code>          public class Test {
+public static void main(String args[]) {
+
+
+    MainModule mainModule=new MainModule();
+    IResponse response = new IResponse() {
+        @Override
+        public void response(String result) {
+            System.out.print(result);
+        }
+    };
+    BrigeListManager.getInstance().getBridgeManager().getRequest().request(response);
+
+}
+   }
+</code></pre><h6 id="end"><a href="#end" class="headerlink" title="end"></a>end</h6><p>   <img src="https://upload-images.jianshu.io/upload_images/1453857-b084f81966313e54.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20181129-212144@2x.png"></p>
+<p>嗯，，，美滋滋吧，虽说代码不难，但是不知道为什么，却让我想的很是难受，恼火，可能年纪大了，😔</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/零乱逃">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/messnoTrace">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

@@ -11,7 +11,7 @@
 
     <title>
         
-        乱逃的博客 | notrace&#39;s Blog
+        存储复杂数据类型 - 乱逃的博客 | notrace&#39;s Blog
         
     </title>
 
@@ -53,7 +53,7 @@
     </div>
     <div class="contents" id="nav-content">
         <ul>
-            <li  class=active >
+            <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
                     <span>HOME</span>
@@ -88,6 +88,10 @@
         </ul>
     </div>
     
+        <div id="toc" class="toc-article">
+    
+</div>
+    
 </div>
 
 
@@ -111,157 +115,98 @@
     <div class="index-middle">
         <!-- Main Content -->
         
-<div class="post-preview-container" style="min-height: 720px">
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/关于 Androidstudio Unable to resolve dependency for 'app@debugcompileClasspath' Could not resolve library的解决方案/">
-                <h3>
-                    library的解决方案
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
+
+
+<div class="post-container">
+    <div class="post-title">
+        存储复杂数据类型
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/多线程中wait-notify的一些理解，以及最经典的生产者和消费者/">
-                <h3>
-                    多线程中wait/notify的一些理解，以及最经典的生产者和消费者
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-04-05 10:34:34</span></span>
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/用androidstudio编写第一个xposed模块/">
-                <h3>
-                    用androidstudio编写第一个xposed模块
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
+    <div class="post-content ">
+        <p>通常，我们用到数据库会有很多种，这里就不做讨论了，我们只来说说如何用room来存储一些复杂数据结构。</p>
+<p>首先看此文章的都假设你已经看过了room的简单用法，如果没有看过，那你可能需要先去看看了。<br>假设，我们从后台返回一个数据类型是这样的：    </p>
+<pre><code>    public class News{
+      public long id;
+      public String title;
+      public String title;
+      public List&lt;Tag&gt;tags;
+    }
+
+  public class Tag{
+    public long id;
+    public String name;
+}
+</code></pre><p>这种数据类型就比较很常见了，当然了，你第一反应可能是： 这个哪里复杂了，嗯，说不复杂确实不复杂，说复杂呢，是因为用room的话，确实比较麻烦，说白了，就是如何用 room存储带有lis<object>类型的数据。ok话不多说，我们直接上代码：</object></p>
+<p>   ######bean 的改造</p>
+<pre><code>@Entity(tableName = &quot;news&quot;)
+ public class News{
+@PrimaryKey(autoGenerate = true)
+  public long id;
+  public String title;
+  public String title;
+ @Ignore
+  public List&lt;Tag&gt;tags;
+} 
+
+
+ @Entity(tableName = &quot;tags&quot;)
+ public class Tag{
+       @PrimaryKey(autoGenerate = true)
+        public long id;
+        public String name;
+
+         @ColumnInfo(name = &quot;news_id&quot;)
+      public long newsid;
+  }
+</code></pre><p>然后我们重新添加一个bean：NewsWithTags:</p>
+<pre><code>        public class NewsWithTags{
+@Embedded
+public News news;
+
+  @Relation(parentColumn = &quot;id&quot;,entityColumn = &quot;news_id&quot;)
+   public List&lt;Tag&gt; tags;
+    }
+</code></pre><p>注意看这个bean，没有table注解@Embedded 注解的是news这个bean。<br>@Relation 中parentColumn对应的是news中的id，entityColumn对应的是tag中的news_id,这个值实际上就等于news中的id。</p>
+<p>######Dao<br>    NewsWithTagDao:</p>
+<pre><code> @Dao
+public interface NewsWithTaDao {
+@Transaction
+@Query(&quot;SELECT * FROM news&quot;)
+List&lt;NewsWithTag&gt; getAllNews();
+</code></pre><p>}</p>
+<blockquote>
+<p>其他没啥好说的，添加数据要先添加news，然后根据news 的id添加tag，删除数据，要先根据news的id删除tag表中的数据</p>
+</blockquote>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">donate</button>
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/Android如何在子module中取获取主module中通过网络接口请求返回的数据？/">
-                <h3>
-                    Android如何在子module中取获取主module中通过网络接口请求返回的数据？
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/avatar.jpg">
+        <p> 感谢鼓励 </p>
     </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/存储复杂数据类型/">
-                <h3>
-                    存储复杂数据类型
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/资源索引/">
-                <h3>
-                    资源索引
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/如何修改CheckBoxPreference 中title ，summary字体的颜色/">
-                <h3>
-                    Untitled
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/Android通过反射实现静默安装/">
-                <h3>
-                    Untitled
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/AndroidStudio中调用.so包出现找不到.so包的错误/">
-                <h3>
-                    Untitled
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2019-04-05</div>
-        <div class="post-info">
-            <a href="/2019/04/05/Android 多渠道打包如何修改app name，icon/">
-                <h3>
-                    Untitled
-                </h3>
-            </a>
-            <p>
-                
-            </p>
-        </div>
-    </div>
-    
 </div>
-<ul class="pager">
-    
-    
-    <li class="next">
-        <a href="/page/2/">Older Posts &rarr;</a>
-    </li>
-    
-</ul>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
 
     </div>
 </div>
@@ -322,12 +267,31 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="/js/index.js"></script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
 
 
 
