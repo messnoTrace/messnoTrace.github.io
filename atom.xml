@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://messnoTrace.github.io/"/>
-  <updated>2019-04-05T02:47:22.486Z</updated>
+  <updated>2019-04-05T02:37:48.591Z</updated>
   <id>https://messnoTrace.github.io/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>library的解决方案</title>
-    <link href="https://messnoTrace.github.io/2019/04/05/%E5%85%B3%E4%BA%8E%20Androidstudio%20Unable%20to%20resolve%20dependency%20for%20&#39;app@debugcompileClasspath&#39;%20Could%20not%20resolve%20library%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
-    <id>https://messnoTrace.github.io/2019/04/05/关于 Androidstudio Unable to resolve dependency for &#39;app@debugcompileClasspath&#39; Could not resolve library的解决方案/</id>
-    <published>2019-04-05T02:39:39.000Z</published>
-    <updated>2019-04-05T02:47:22.486Z</updated>
-    
-    <content type="html"><![CDATA[<p>先介绍下背景，环境是Androidstudio3.1.3，没错，截止目前是最新的，在不久之前，我用的是3.1.2，然后新建项目，敲上代码，implemention 各种顺手的library，毛问题都没有，升级了3.1.3之后，我想加一个库，结果出现了如下的各种问题。<img src="https://upload-images.jianshu.io/upload_images/1453857-4489eca9ee9892f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110232.png"></p><p>一开始我以为是库的问题，然后一顿google搜索：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-b767224e5beb26ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110400@2x.png"></p><p>眼睛一亮，看到第二个答案直接出现关键词androidstudio3.0，心里顿时一阵鸡冻，点进去看看答案，直接找认同最多的答案：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-2d2ff13fcdfab998.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-110636@2x.png"></p><p>意思是啥呢，大概就是说在andoridsutio2.x向3.x迁移的时候需要注意修改的东西，然并卵啊，我是直接上的3.X的新项目，没有迁移一说。随后又是一阵搜索，这下就尴尬了，答案基本上都是类似这样 的和不勾选gradle offline work这个选项，各种搜索各种的贼鸡儿蛋疼，年轻人你感觉得到绝望么，我在想，如果时光可以倒流，我肯定不手贱升级AndroidStudio，以前的2.x用起来，是毛问题都没有啊，google都救不了我了，我怕是没救了，绝望。添加不了任何库，这个问题，是真的真的很蛋疼啊，啥都要自己写，换你，你愿意么？反正我是不愿意。。<br>接着又是一波操作猛如虎，中间过程就不重要了，直接跳结果吧。<br>打开Terminal选项卡，输入 ./gradlew build（windows下是gradlew build提示没这个命令的，那就是你的gradle环境变量没配置）-&gt; 回车</p><p><img src="https://upload-images.jianshu.io/upload_images/1453857-6a68fddb44522e5f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-111908.png"></p><p>重点来了，<code>Connect to 127.0.0.1:1080 [/127.0.0.1] failed: Connection refused (Connection refused)</code> mmp 搜索：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-e4706390e41dfdf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-112122@2x.png"></p><p>第一个点进去 <a href="https://blog.csdn.net/Rainminism/article/details/79713788" target="_blank" rel="external">链接</a><br>进去一看说我们使用了代理，要修改gradle.properties 文件，然后默默的打开我们的工程此文件一看，<img src="https://upload-images.jianshu.io/upload_images/1453857-23b4e09470d702f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-112620.png"></p><p>意不意外，惊不惊喜，里面毛都没有啊，然后有没有人跟我一样，有点怀疑人生了，怎么办怎么办，继续搜索啊，果然，在一个答案中发现了自己是有多傻逼<br><img src="https://upload-images.jianshu.io/upload_images/1453857-f646707a7e7906d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113000@2x.png"></p><p>重点来了，第一句，<code>Go to gradle scripts</code> ，卧槽，我想起来个东西，我们通常用的都是project视图啊，新建项目都是Android视图啊，要是你曾经看过Andorid视图，或者说你曾经解决过Andoridstudio遇到的坑，那你就明白了我说的是啥，吓得我赶紧切换到Android视图：<br><img src="https://upload-images.jianshu.io/upload_images/1453857-834fb634600acea8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113441.png"></p><p>果然，<code>globle properties</code><br>打开一看，mmp，果然存在：<img src="https://upload-images.jianshu.io/upload_images/1453857-5b2fc6c929a87506.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="WX20180626-113550.png"><br>果断注释，重新编译，老铁，真的没毛病了。😌 mmp</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;先介绍下背景，环境是Androidstudio3.1.3，没错，截止目前是最新的，在不久之前，我用的是3.1.2，然后新建项目，敲上代码，implemention 各种顺手的library，毛问题都没有，升级了3.1.3之后，我想加一个库，结果出现了如下的各种问题。&lt;img
-      
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>多线程中wait/notify的一些理解，以及最经典的生产者和消费者</title>
@@ -94,29 +73,6 @@
       
         &lt;p&gt;如题：今天遇到一个需求，在子module中获取主module中通过网络接口异步返回的数据？嗯。。绕了一下午把自己绕进去了，简单来说，就两个回调完事。一个request，一个response。但是胡思乱想了一下午，很是尴尬，废话不多说，咱直接上代码。&lt;/p&gt;
 &lt;p&gt;#####
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>存储复杂数据类型</title>
-    <link href="https://messnoTrace.github.io/2019/04/05/%E5%AD%98%E5%82%A8%E5%A4%8D%E6%9D%82%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
-    <id>https://messnoTrace.github.io/2019/04/05/存储复杂数据类型/</id>
-    <published>2019-04-05T02:34:34.000Z</published>
-    <updated>2019-04-05T02:34:58.193Z</updated>
-    
-    <content type="html"><![CDATA[<p>通常，我们用到数据库会有很多种，这里就不做讨论了，我们只来说说如何用room来存储一些复杂数据结构。</p><p>首先看此文章的都假设你已经看过了room的简单用法，如果没有看过，那你可能需要先去看看了。<br>假设，我们从后台返回一个数据类型是这样的：    </p><pre><code>    public class News{      public long id;      public String title;      public String title;      public List&lt;Tag&gt;tags;    }  public class Tag{    public long id;    public String name;}</code></pre><p>这种数据类型就比较很常见了，当然了，你第一反应可能是： 这个哪里复杂了，嗯，说不复杂确实不复杂，说复杂呢，是因为用room的话，确实比较麻烦，说白了，就是如何用 room存储带有lis<object>类型的数据。ok话不多说，我们直接上代码：</object></p><p>   ######bean 的改造</p><pre><code>@Entity(tableName = &quot;news&quot;) public class News{@PrimaryKey(autoGenerate = true)  public long id;  public String title;  public String title; @Ignore  public List&lt;Tag&gt;tags;}  @Entity(tableName = &quot;tags&quot;) public class Tag{       @PrimaryKey(autoGenerate = true)        public long id;        public String name;         @ColumnInfo(name = &quot;news_id&quot;)      public long newsid;  }</code></pre><p>然后我们重新添加一个bean：NewsWithTags:</p><pre><code>        public class NewsWithTags{@Embeddedpublic News news;  @Relation(parentColumn = &quot;id&quot;,entityColumn = &quot;news_id&quot;)   public List&lt;Tag&gt; tags;    }</code></pre><p>注意看这个bean，没有table注解@Embedded 注解的是news这个bean。<br>@Relation 中parentColumn对应的是news中的id，entityColumn对应的是tag中的news_id,这个值实际上就等于news中的id。</p><p>######Dao<br>    NewsWithTagDao:</p><pre><code> @Daopublic interface NewsWithTaDao {@Transaction@Query(&quot;SELECT * FROM news&quot;)List&lt;NewsWithTag&gt; getAllNews();</code></pre><p>}</p><blockquote><p>其他没啥好说的，添加数据要先添加news，然后根据news 的id添加tag，删除数据，要先根据news的id删除tag表中的数据</p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;通常，我们用到数据库会有很多种，这里就不做讨论了，我们只来说说如何用room来存储一些复杂数据结构。&lt;/p&gt;
-&lt;p&gt;首先看此文章的都假设你已经看过了room的简单用法，如果没有看过，那你可能需要先去看看了。&lt;br&gt;假设，我们从后台返回一个数据类型是这样的：    &lt;/p&gt;
-
       
     
     </summary>
@@ -189,6 +145,32 @@
   
   <entry>
     <title></title>
+    <link href="https://messnoTrace.github.io/2019/04/05/Android%20%E5%A4%9A%E6%B8%A0%E9%81%93%E6%89%93%E5%8C%85%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9app%20name%EF%BC%8Cicon/"/>
+    <id>https://messnoTrace.github.io/2019/04/05/Android 多渠道打包如何修改app name，icon/</id>
+    <published>2019-04-04T16:07:17.469Z</published>
+    <updated>2019-04-05T03:08:18.796Z</updated>
+    
+    <content type="html"><![CDATA[<p>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:</p><pre><code>productFlavor{          baidu {          }        xiaomi{}         wandoujia{}    }</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p><p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p><p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p><pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;</code></pre><p>然后application</p><pre><code>tools:replace=&quot;android:icon&quot; android:icon=&quot;@drawable/icon_all&quot;</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p><p>剩下的就靠小伙伴么自己摸索了。。。。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;productFlavor{
+          baidu {
+          }
+        xiaomi{}
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
     <link href="https://messnoTrace.github.io/2019/04/05/AndroidStudio%E4%B8%AD%E8%B0%83%E7%94%A8.so%E5%8C%85%E5%87%BA%E7%8E%B0%E6%89%BE%E4%B8%8D%E5%88%B0.so%E5%8C%85%E7%9A%84%E9%94%99%E8%AF%AF/"/>
     <id>https://messnoTrace.github.io/2019/04/05/AndroidStudio中调用.so包出现找不到.so包的错误/</id>
     <published>2019-04-04T16:07:17.469Z</published>
@@ -210,38 +192,12 @@
   
   <entry>
     <title></title>
-    <link href="https://messnoTrace.github.io/2019/04/05/Android%20%E5%A4%9A%E6%B8%A0%E9%81%93%E6%89%93%E5%8C%85%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9app%20name%EF%BC%8Cicon/"/>
-    <id>https://messnoTrace.github.io/2019/04/05/Android 多渠道打包如何修改app name，icon/</id>
-    <published>2019-04-04T16:07:17.469Z</published>
-    <updated>2017-06-17T02:31:38.766Z</updated>
-    
-    <content type="html"><![CDATA[<p>搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：</p><pre><code>productFlavor{          baidu {          }        xiaomi{}         wandoujia{}    }</code></pre><p>像这样，就可以了，然后将友盟的chanelvalue修改下就可以了，需要不同的渠道，配置不同的applicationid，也不是什么难事。不过今天我遇到的需求是，不同的渠道配置不同的appname和icon。一开始我想着用之前的哪种方法应该可行，然后就试了下，一试不知道，试过就蛋疼了，appname是可以换掉，但是icon呢，，咋整，，，找了一圈方法，都木有找到，郁闷，string类型的，都可以通过常用的那种替换占位符的方式来改，或者是resValue(这个没有试，，但是似乎是可以的)。然后各种搜资料，有什么设置 useOldManifestMerger false ，不过自己没试成功（不能怪我，理论是这个道理的，只不过gradle版本不一样，Google升级了，导致我懵逼了）偶然间Google了一下  how to change app icon for diffrent productFlavors in android，点开第一个<a href="http://stackoverflow.com/questions/22875948/how-to-provide-different-android-app-icons-for-different-gradle-buildtypes" target="_blank" rel="external">链接</a>,然后答主的答案给了我一些启发：</p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-3cbf6c005c8c592c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811184619.png"></p><p>然后搜啊搜，又找到了<a href="http://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest" target="_blank" rel="external">这个</a></p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-0c8656280ca0a302.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160811185123.png"></p><p>然后经过自己的摸索，搞了出来了，简单来说：<br>大家看第一张图你的目录结构就会发现，如果我们在src/main/文件夹下新建以我们去渠道名为名的，目录结构和main一样的文件目录，当我们打包的时候就会读取这里面的资源文件，所以呢，我就新建了个清单文件，将头部换成图二所示，在根目录添加</p><pre><code>xmlns:tools=&quot;http://schemas.android.com/tools&quot;</code></pre><p>然后application</p><pre><code>tools:replace=&quot;android:icon&quot; android:icon=&quot;@drawable/icon_all&quot;</code></pre><p>替换你需要换的icon就行，ok，至此搞定，至于为什么这么搞，我看到了官方的一篇文章<a href="http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Manifest-files-ordering" target="_blank" rel="external">清单合并</a>,另外还有篇国内<a href="http://blog.csdn.net/maosidiaoxian/article/details/42671999" target="_blank" rel="external">译文</a></p><p>剩下的就靠小伙伴么自己摸索了。。。。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;搞过多渠道打包的都知道，我们只需要在 module 的build.gradle中配置相应的渠道号就行：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;productFlavor{
-          baidu {
-          }
-        xiaomi{}
-        
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
     <link href="https://messnoTrace.github.io/2019/04/05/Android%20Accessibility%20%E7%9A%84%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95/"/>
     <id>https://messnoTrace.github.io/2019/04/05/Android Accessibility 的简单用法/</id>
     <published>2019-04-04T16:07:17.468Z</published>
-    <updated>2017-06-17T02:30:43.782Z</updated>
+    <updated>2019-04-05T03:07:01.633Z</updated>
     
-    <content type="html"><![CDATA[<p>Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或者操作不灵活的人来辅助操作的，也可以用来干一些别的事，比如自动抢红包啊，静默安装点击啊等已知或者未知的应用。出于某种需求，就研究了下这个功能的简单用法，先做一个模拟按钮点击的效果。<br>  布局很简单，就不贴代码了，简单描述下，主界面就一个按钮，id随便你取，在Activity中设置点击事件，弹出一个Toast。</p><p>#####步骤</p><ol><li><p>创建CheckAccessbilityServices：<br>CheckAccessbilityServices 继承自AccessibilityService，并在清单文件applcation节点中配置，并加入权限</p><pre><code>&lt;service    android:name=&quot;.CheckAccessbilityServices&quot;    android:enabled=&quot;true&quot;        android:exported=&quot;true&quot;android:label=&quot;测试点击&quot;android:permission=&quot;android.permission.BIND_ACCESSIBILITY_SERVICE&quot;&gt;      &lt;intent-filter&gt;            &lt;action android:name=&quot;android.accessibilityservice.AccessibilityService&quot; /&gt;      &lt;/intent-filter&gt;    &lt;meta-data         android:name=&quot;android.accessibilityservice&quot;         android:resource=&quot;@xml/check_accessibility_config&quot; /&gt;&lt;/service&gt;</code></pre><p>2.在res目录下创建文件夹xml，并创建步骤一中check_accessibility_config.xml</p><pre><code>&lt;accessibility-service xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;                   android:description=&quot;@string/check_click&quot;     android:packageNames=&quot;com.notrace&quot;      android:accessibilityEventTypes=    &quot;typeAllMask|typeViewClicked|typeViewFocused|typeNotificationStateChanged|typeWindowStateChanged&quot;      android:accessibilityFlags=&quot;flagDefault&quot;     android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;      android:notificationTimeout=&quot;100&quot;     android:canRetrieveWindowContent=&quot;true&quot;    /&gt;</code></pre><p>这里面有一些常用的属性，简单介绍下</p><pre><code>android:accessibilityEventTypes=&quot;typeAllMask&quot;</code></pre><p>看属性名也差不多可以明白，这个是用来设置响应事件的类型，typeAllMask当然就是响应所有类型的事件了。当然还有单击、长按、滑动等。 </p><pre><code>android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;</code></pre><p>设置回馈给用户的方式</p><pre><code>android:notificationTimeout=&quot;100&quot;</code></pre><p>响应时间的设置就不用多说了 </p><pre><code>android:packageNames=&quot;com.notrace&quot;</code></pre><p>可以指定响应某个应用的事件，我的demo包名就叫com.notrace,可以多个，用”,”隔开。</p><pre><code>android:description=&quot;模拟点击&quot;</code></pre></li></ol><p>描述你在系统辅助功能开关中看到的描述</p><p>3.CheckAccessbilityServices  实现onAccessibilityEvent和onInterrupt方法</p><pre><code>     @Override   public void onAccessibilityEvent(AccessibilityEvent event) {             //过滤包名           String pkgName = event.getPackageName().toString();               if(!&quot;com.notrace&quot;.equals(pkgName))                 return;         switch (type){                 case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:                 //切换页面的时候此时会触发一个叫TYPE_WINDOW_STATE_CHANGED的事件             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();             if(nodeInfo!=null)  {                if(&quot;com.notrace.MainActivity&quot;.equals(event.getClassName())){                         List&lt;AccessibilityNodeInfo&gt;     list=                     nodeInfo.findAccessibilityNodeInfosByViewId(&quot;com.notrace:id/btn_click&quot;);               if(list!=null&amp;&amp;list.size()&gt;0)  {                       list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);                       }                   }                   break;           case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:             break;       }                     }  </code></pre><p>注意这里有个叫com.notrace:id/btn_click的，就是前面的那个按钮，我取id叫btn_click,这个东西可以通过eclipse提供的一个工具dump查看,如下图：</p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-78fa62630f5370b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162014.png"></p><p>微信抢红包的界面你就可以这么看了。<br>list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);      就是模拟点击事件</p><p>至此，模拟点击就已经全部完成了，我们打开手机辅助功能界面会看见：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-2b1084259b04dab0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162331.png"><br>点击进去：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-cd8e0447e512c2ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162434.png"></p><p>打开这个开关就可以了。<br>至此，当页面切换到MainActivity中就可以弹出toast了，至于别的奇奇怪怪的功能，就需要小伙伴们自己摸索了。<br><a href="https://github.com/messnoTrace/Demo_Accessbility.git" target="_blank" rel="external">Demo代码</a></p>]]></content>
+    <content type="html"><![CDATA[<p>Accessbility 又叫做辅助功能，是Android官方推出帮助身体不便或者操作不灵活的人来辅助操作的，也可以用来干一些别的事，比如自动抢红包啊，静默安装点击啊等已知或者未知的应用。出于某种需求，就研究了下这个功能的简单用法，先做一个模拟按钮点击的效果。<br>  布局很简单，就不贴代码了，简单描述下，主界面就一个按钮，id随便你取，在Activity中设置点击事件，弹出一个Toast。</p><p>#####步骤</p><ol><li><p>创建CheckAccessbilityServices：<br>CheckAccessbilityServices 继承自AccessibilityService，并在清单文件applcation节点中配置，并加入权限</p><pre><code>&lt;service    android:name=&quot;.CheckAccessbilityServices&quot;    android:enabled=&quot;true&quot;        android:exported=&quot;true&quot;android:label=&quot;测试点击&quot;android:permission=&quot;android.permission.BIND_ACCESSIBILITY_SERVICE&quot;&gt;      &lt;intent-filter&gt;            &lt;action android:name=&quot;android.accessibilityservice.AccessibilityService&quot; /&gt;      &lt;/intent-filter&gt;    &lt;meta-data         android:name=&quot;android.accessibilityservice&quot;         android:resource=&quot;@xml/check_accessibility_config&quot; /&gt;&lt;/service&gt;&apos;</code></pre><p>2.在res目录下创建文件夹xml，并创建步骤一中check_accessibility_config.xml</p><pre><code>&lt;accessibility-service xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;                   android:description=&quot;@string/check_click&quot;     android:packageNames=&quot;com.notrace&quot;      android:accessibilityEventTypes=    &quot;typeAllMask|typeViewClicked|typeViewFocused|typeNotificationStateChanged|typeWindowStateChanged&quot;      android:accessibilityFlags=&quot;flagDefault&quot;     android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;      android:notificationTimeout=&quot;100&quot;     android:canRetrieveWindowContent=&quot;true&quot;    /&gt;</code></pre><p>这里面有一些常用的属性，简单介绍下</p><pre><code>android:accessibilityEventTypes=&quot;typeAllMask&quot;</code></pre><p>看属性名也差不多可以明白，这个是用来设置响应事件的类型，typeAllMask当然就是响应所有类型的事件了。当然还有单击、长按、滑动等。 </p><pre><code>android:accessibilityFeedbackType=&quot;feedbackSpoken&quot;</code></pre><p>设置回馈给用户的方式</p><pre><code>android:notificationTimeout=&quot;100&quot;</code></pre><p>响应时间的设置就不用多说了 </p><pre><code>android:packageNames=&quot;com.notrace&quot;</code></pre><p>可以指定响应某个应用的事件，我的demo包名就叫com.notrace,可以多个，用”,”隔开。</p><pre><code>android:description=&quot;模拟点击&quot;</code></pre></li></ol><p>描述你在系统辅助功能开关中看到的描述</p><p>3.CheckAccessbilityServices  实现onAccessibilityEvent和onInterrupt方法</p><pre><code>     @Override   public void onAccessibilityEvent(AccessibilityEvent event) {             //过滤包名         String pkgName = event.getPackageName().toString();             if(!&quot;com.notrace&quot;.equals(pkgName))                 return;         switch (type){                 case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:                 //切换页面的时候此时会触发一个叫TYPE_WINDOW_STATE_CHANGED的事件             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();             if(nodeInfo!=null)  {                if(&quot;com.notrace.MainActivity&quot;.equals(event.getClassName())){                         List&lt;AccessibilityNodeInfo&gt;     list=                     nodeInfo.findAccessibilityNodeInfosByViewId(&quot;com.notrace:id/btn_click&quot;);               if(list!=null&amp;&amp;list.size()&gt;0)  {                       list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);                       }                   }                   break;           case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:             break;       }                     }  </code></pre><p>注意这里有个叫com.notrace:id/btn_click的，就是前面的那个按钮，我取id叫btn_click,这个东西可以通过eclipse提供的一个工具dump查看,如下图：</p><p><img src="http://upload-images.jianshu.io/upload_images/1453857-78fa62630f5370b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162014.png"></p><p>微信抢红包的界面你就可以这么看了。<br>list.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);      就是模拟点击事件</p><p>至此，模拟点击就已经全部完成了，我们打开手机辅助功能界面会看见：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-2b1084259b04dab0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162331.png"><br>点击进去：<br><img src="http://upload-images.jianshu.io/upload_images/1453857-cd8e0447e512c2ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ截图20160808162434.png"></p><p>打开这个开关就可以了。<br>至此，当页面切换到MainActivity中就可以弹出toast了，至于别的奇奇怪怪的功能，就需要小伙伴们自己摸索了。<br><a href="https://github.com/messnoTrace/Demo_Accessbility.git" target="_blank" rel="external">Demo代码</a></p>]]></content>
     
     <summary type="html">
     
